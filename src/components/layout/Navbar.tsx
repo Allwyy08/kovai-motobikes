@@ -4,14 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { 
-  Wrench, 
-  Menu, 
-  X, 
-  ShieldCheck, 
-  ChevronRight,
-  MessageSquare
-} from 'lucide-react';
+import { Menu, X, ArrowUpRight, ShieldCheck, MessageSquare } from 'lucide-react';
 import { showroomConfig } from '@/config/showroom';
 
 export default function Navbar() {
@@ -22,14 +15,13 @@ export default function Navbar() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 15);
+      setIsScrolled(window.scrollY > 20);
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const navLinks = [
-    { name: 'Home', href: '/' },
     { name: 'Motorcycles', href: '/motorcycles' },
     { name: 'Services', href: '/services' },
     { name: 'Test Ride', href: '/test-ride' },
@@ -43,144 +35,150 @@ export default function Navbar() {
     return pathname.startsWith(path);
   };
 
-  // Determine navbar mode: dark when on homepage hero & not scrolled; light when scrolled or on other pages
-  const isDarkNavbar = isHomePage && !isScrolled;
+  const isDarkHeroNavbar = isHomePage && !isScrolled;
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-      isDarkNavbar
-        ? 'bg-[#090b0e]/75 backdrop-blur-lg border-b border-white/10 text-white py-4'
-        : 'bg-white/95 backdrop-blur-md border-b border-gray-200 text-gray-900 py-3 shadow-sm'
-    }`}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <header
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 h-[66px] flex items-center ${
+        isDarkHeroNavbar
+          ? 'bg-black/25 backdrop-blur-md border-b border-white/10 text-white'
+          : 'bg-white/95 backdrop-blur-md border-b border-[#E5E5E5] text-[#0A0A0A] shadow-xs'
+      }`}
+    >
+      <div className="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8 w-full">
         <div className="flex items-center justify-between">
           
-          {/* KMB Logo Container */}
-          <Link href="/" className="flex items-center gap-3 group">
-            <div className="relative h-10 w-28 sm:h-11 sm:w-32 bg-white rounded-md p-1 border border-gray-300 shadow-sm transition-transform group-hover:scale-105">
+          {/* Logo Left */}
+          <Link href="/" className="flex items-center shrink-0">
+            <div className="relative h-9 md:h-10 w-[105px] md:w-[125px]">
               <Image
-                src="/images/logo.jpg"
-                alt="KOVAI MOTOBIKES Logo"
+                src="/images/kovai-motobikes-logo-transparent.png"
+                alt="KOVAI MOTOBIKES"
                 fill
                 priority
-                className="object-contain p-0.5"
+                className="object-contain object-left"
               />
             </div>
           </Link>
 
-          {/* Desktop Navigation Links */}
-          <nav className={`hidden lg:flex items-center gap-1 rounded-full px-3 py-1 ${
-            isDarkNavbar 
-              ? 'bg-[#090b0e]/60 border border-white/10 backdrop-blur-md' 
-              : 'bg-gray-100/80 border border-gray-200'
-          }`}>
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                href={link.href}
-                className={`px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider font-sans rounded-full transition-all ${
-                  isActive(link.href)
-                    ? 'bg-[#d32f2f] text-white shadow-sm'
-                    : isDarkNavbar
-                      ? 'text-gray-300 hover:text-white hover:bg-white/10'
-                      : 'text-gray-700 hover:text-gray-900 hover:bg-gray-200/60'
-                }`}
-              >
-                {link.name}
-              </Link>
-            ))}
+          {/* Desktop Navigation Centered */}
+          <nav className="hidden lg:flex items-center gap-8">
+            {navLinks.map((link) => {
+              const active = isActive(link.href);
+              return (
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  className={`text-xs uppercase tracking-[0.1em] font-semibold transition-colors relative py-1 ${
+                    active
+                      ? isDarkHeroNavbar ? 'text-white' : 'text-[#0A0A0A]'
+                      : isDarkHeroNavbar
+                        ? 'text-gray-300 hover:text-white'
+                        : 'text-[#666666] hover:text-[#0A0A0A]'
+                  }`}
+                >
+                  {link.name}
+                  {active && (
+                    <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#D32F2F]" />
+                  )}
+                </Link>
+              );
+            })}
           </nav>
 
-          {/* Desktop Right Action Buttons */}
-          <div className="hidden lg:flex items-center gap-2.5">
+          {/* Desktop Right Action CTAs */}
+          <div className="hidden lg:flex items-center gap-4 shrink-0">
             <a
               href={`https://wa.me/${showroomConfig.whatsapp.replace(/[^0-9]/g, '')}`}
               target="_blank"
               rel="noopener noreferrer"
-              className={`px-3 py-1.5 rounded-md transition-colors flex items-center gap-1.5 text-xs font-sans font-bold border ${
-                isDarkNavbar
-                  ? 'text-emerald-400 bg-emerald-950/60 border-emerald-800/70 hover:text-white'
-                  : 'text-emerald-700 bg-emerald-50 border-emerald-200 hover:bg-emerald-100'
+              className={`text-xs uppercase tracking-wider font-semibold flex items-center gap-1.5 transition-colors ${
+                isDarkHeroNavbar
+                  ? 'text-emerald-400 hover:text-emerald-300'
+                  : 'text-[#666666] hover:text-[#0A0A0A]'
               }`}
-              title="Chat on WhatsApp"
             >
-              <MessageSquare className="w-3.5 h-3.5" />
+              <MessageSquare className="w-3.5 h-3.5 text-emerald-500" />
               <span>WhatsApp</span>
             </a>
 
             <Link
-              href="/book-service"
-              className="px-4 py-2 text-xs font-bold uppercase tracking-wider text-white bg-[#d32f2f] hover:bg-[#b71c1c] rounded-md transition-all font-sans flex items-center gap-1.5 shadow-sm"
+              href="/contact"
+              className={`btn-primary !h-9 !px-4 !text-[11px]`}
             >
-              <Wrench className="w-3.5 h-3.5" />
-              Book Service
+              <span>ENQUIRE</span>
+              <ArrowUpRight className="w-3.5 h-3.5" />
             </Link>
 
             <Link
               href="/admin/login"
-              title="Staff Login"
-              className={`p-2 rounded-md transition-colors ${
-                isDarkNavbar ? 'text-gray-400 hover:text-white hover:bg-white/10' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100'
+              title="Staff Portal"
+              className={`p-1.5 transition-colors ${
+                isDarkHeroNavbar ? 'text-gray-400 hover:text-white' : 'text-gray-400 hover:text-[#0A0A0A]'
               }`}
             >
               <ShieldCheck className="w-4 h-4" />
             </Link>
           </div>
 
-          {/* Mobile Menu Button */}
+          {/* Mobile Hamburger Right */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className={`lg:hidden p-2 rounded-md min-h-[44px] min-w-[44px] flex items-center justify-center ${
-              isDarkNavbar ? 'text-gray-300 hover:text-white' : 'text-gray-700 hover:text-gray-900'
+            className={`lg:hidden p-2 flex items-center justify-center ${
+              isDarkHeroNavbar ? 'text-white' : 'text-[#0A0A0A]'
             }`}
-            aria-label="Toggle navigation menu"
+            aria-label="Toggle Menu"
           >
             {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
+
         </div>
       </div>
 
-      {/* Mobile Drawer Navigation */}
+      {/* Mobile Navigation Menu */}
       {mobileMenuOpen && (
-        <div className="lg:hidden fixed inset-x-0 top-full bg-white border-b border-gray-200 shadow-2xl p-5 transition-all text-gray-900 max-h-[calc(100vh-70px)] overflow-y-auto">
-          <div className="flex flex-col gap-1.5">
+        <div className="lg:hidden fixed inset-x-0 top-16 bg-[#0A0A0A] text-white border-b border-white/10 p-6 space-y-5 animate-fade-in-up">
+          <div className="flex flex-col space-y-3">
+            <Link
+              href="/"
+              onClick={() => setMobileMenuOpen(false)}
+              className="text-sm font-semibold uppercase tracking-wider text-gray-300 hover:text-white py-2 border-b border-white/10"
+            >
+              Home
+            </Link>
             {navLinks.map((link) => (
               <Link
                 key={link.name}
                 href={link.href}
                 onClick={() => setMobileMenuOpen(false)}
-                className={`px-4 py-3 text-xs font-bold uppercase tracking-wider font-sans rounded-lg flex items-center justify-between min-h-[44px] ${
-                  isActive(link.href)
-                    ? 'bg-[#d32f2f] text-white shadow-sm'
-                    : 'text-gray-800 hover:bg-gray-100'
+                className={`text-sm font-semibold uppercase tracking-wider py-2 border-b border-white/10 flex items-center justify-between ${
+                  isActive(link.href) ? 'text-[#D32F2F]' : 'text-gray-300 hover:text-white'
                 }`}
               >
                 <span>{link.name}</span>
-                <ChevronRight className="w-4 h-4 opacity-70" />
+                <ArrowUpRight className="w-4 h-4 text-gray-500" />
               </Link>
             ))}
+          </div>
 
-            <div className="pt-3 border-t border-gray-200 flex flex-col gap-2.5 mt-2">
-              <Link
-                href="/book-service"
-                onClick={() => setMobileMenuOpen(false)}
-                className="w-full py-3 text-center text-xs font-bold uppercase tracking-wider text-white bg-[#d32f2f] hover:bg-[#b71c1c] rounded-lg flex items-center justify-center gap-2 shadow-md font-sans min-h-[44px]"
-              >
-                <Wrench className="w-4 h-4" />
-                Book Service Appointment
-              </Link>
-
-              <a
-                href={`https://wa.me/${showroomConfig.whatsapp.replace(/[^0-9]/g, '')}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => setMobileMenuOpen(false)}
-                className="w-full py-3 text-center text-xs font-bold uppercase tracking-wider text-emerald-800 bg-emerald-50 border border-emerald-200 rounded-lg flex items-center justify-center gap-2 font-sans min-h-[44px]"
-              >
-                <MessageSquare className="w-4 h-4 text-emerald-600" />
-                WhatsApp Sales & Service
-              </a>
-            </div>
+          <div className="pt-2 flex flex-col gap-3">
+            <Link
+              href="/contact"
+              onClick={() => setMobileMenuOpen(false)}
+              className="btn-primary w-full text-center"
+            >
+              ENQUIRE NOW
+            </Link>
+            <a
+              href={`https://wa.me/${showroomConfig.whatsapp.replace(/[^0-9]/g, '')}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => setMobileMenuOpen(false)}
+              className="btn-secondary-light w-full text-center flex items-center justify-center gap-2"
+            >
+              <MessageSquare className="w-4 h-4 text-emerald-400" />
+              <span>WHATSAPP SALES & SERVICE</span>
+            </a>
           </div>
         </div>
       )}

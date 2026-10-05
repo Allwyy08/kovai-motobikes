@@ -1,32 +1,16 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Motorcycle } from '@/lib/types';
 import { fetchMotorcycleBySlug, createCustomerEnquiry } from '@/lib/data-store';
 import WhatsAppButton from '@/components/common/WhatsAppButton';
-import { 
-  Zap, 
-  Gauge, 
-  Fuel, 
-  Wrench, 
-  ShieldCheck, 
-  Compass, 
-  MessageSquare, 
-  ChevronLeft, 
-  ArrowRight,
-  Flame,
-  Check,
-  X,
-  Palette,
-  AlertCircle
-} from 'lucide-react';
+import { ChevronLeft, Check, X, AlertCircle } from 'lucide-react';
 
 export default function MotorcycleDetailsPage() {
   const params = useParams();
-  const router = useRouter();
   const slug = params.slug as string;
 
   const [bike, setBike] = useState<Motorcycle | null>(null);
@@ -56,30 +40,25 @@ export default function MotorcycleDetailsPage() {
 
   if (loading) {
     return (
-      <div className="max-w-7xl mx-auto px-4 py-20 text-center space-y-4">
-        <div className="w-12 h-12 border-4 border-red-600 border-t-transparent rounded-full animate-spin mx-auto" />
-        <p className="text-sm font-mono text-gray-400">Loading model specifications...</p>
+      <div className="max-w-[1360px] mx-auto px-4 py-32 text-center">
+        <p className="text-xs uppercase tracking-widest text-gray-400 font-bold">Loading Model...</p>
       </div>
     );
   }
 
   if (!bike) {
     return (
-      <div className="max-w-4xl mx-auto px-4 py-20 text-center bg-[#121824] rounded-3xl border border-white/10 my-12 space-y-4">
-        <h2 className="text-2xl font-bold text-white font-mono">Motorcycle Model Not Found</h2>
-        <p className="text-sm text-gray-400">The model you requested might have been moved or updated in our showroom inventory.</p>
-        <Link
-          href="/motorcycles"
-          className="inline-flex items-center gap-2 px-6 py-3 bg-red-600 hover:bg-red-500 text-white font-bold text-xs uppercase rounded-xl font-mono"
-        >
-          <ChevronLeft className="w-4 h-4" /> Back to Motorcycles Catalogue
+      <div className="max-w-3xl mx-auto px-4 py-24 text-center space-y-4">
+        <h2 className="text-2xl font-bold text-[#0A0A0A] uppercase">Motorcycle Model Not Found</h2>
+        <Link href="/motorcycles" className="btn-secondary">
+          <ChevronLeft className="w-4 h-4" /> Back to Catalogue
         </Link>
       </div>
     );
   }
 
-  const galleryImages = bike.gallery_urls && bike.gallery_urls.length > 0 
-    ? bike.gallery_urls 
+  const galleryImages = bike.gallery_urls && bike.gallery_urls.length > 0
+    ? bike.gallery_urls
     : [bike.image_url];
 
   const handleEnquirySubmit = async (e: React.FormEvent) => {
@@ -94,7 +73,7 @@ export default function MotorcycleDetailsPage() {
         phone: form.phone,
         email: form.email || 'N/A',
         subject: `Enquiry for ${bike.name}`,
-        message: form.message || `Customer interested in purchasing or getting quote for ${bike.name}.`
+        message: form.message || `Customer interested in ${bike.name}.`
       });
       setFormStatus('success');
       setTimeout(() => {
@@ -103,30 +82,34 @@ export default function MotorcycleDetailsPage() {
       }, 2000);
     } catch (e: any) {
       setFormStatus('error');
-      setFormError(e.message || 'Failed to submit enquiry. Please try again.');
+      setFormError(e.message || 'Failed to submit enquiry.');
     }
   };
 
+  const nameParts = bike.name.split(' ');
+  const brand = nameParts.length > 1 ? nameParts[0].toUpperCase() : bike.category.toUpperCase();
+  const modelName = nameParts.length > 1 ? nameParts.slice(1).join(' ') : bike.name;
+
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12 font-sans">
+    <div className="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 space-y-16 font-sans bg-[#F6F6F4] text-[#0A0A0A]">
       
-      {/* Breadcrumb Nav */}
-      <div className="flex items-center gap-2 text-xs text-gray-600 font-medium">
-        <Link href="/" className="hover:text-gray-900">Home</Link>
+      {/* Breadcrumb */}
+      <div className="flex items-center gap-2 text-xs font-semibold text-[#666666] uppercase tracking-wider">
+        <Link href="/" className="hover:text-[#0A0A0A]">Home</Link>
         <span>/</span>
-        <Link href="/motorcycles" className="hover:text-gray-900">Motorcycles</Link>
+        <Link href="/motorcycles" className="hover:text-[#0A0A0A]">Motorcycles</Link>
         <span>/</span>
-        <span className="text-[#d32f2f] font-bold">{bike.name}</span>
+        <span className="text-[#D32F2F]">{bike.name}</span>
       </div>
 
-      {/* Main Spec & Gallery Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+      {/* Main Spec & Configurator Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 md:gap-16 items-start">
         
-        {/* Left Column: Image Gallery Viewer */}
+        {/* Left Column: Large Photography Gallery */}
         <div className="lg:col-span-7 space-y-4">
           
-          {/* Active Main Image */}
-          <div className="relative h-[400px] sm:h-[500px] w-full bg-gray-100 rounded-2xl overflow-hidden border border-gray-200 shadow-sm">
+          {/* Main Large Photo */}
+          <div className="relative h-[380px] sm:h-[480px] md:h-[540px] w-full bg-white border border-[#E5E5E5] overflow-hidden">
             <Image
               src={galleryImages[activeImageIndex] || bike.image_url}
               alt={bike.name}
@@ -135,48 +118,99 @@ export default function MotorcycleDetailsPage() {
               className="object-cover object-center"
               sizes="(max-width: 1024px) 100vw, 60vw"
             />
-            <div className="absolute top-4 left-4 bg-[#d32f2f] text-white text-xs font-bold uppercase tracking-wider px-3 py-1 rounded">
-              {bike.category}
-            </div>
-            {bike.is_featured && (
-              <div className="absolute top-4 right-4 bg-amber-500 text-black text-xs font-bold uppercase tracking-wider px-3 py-1 rounded flex items-center gap-1 shadow-sm">
-                <Flame className="w-3.5 h-3.5 fill-current" />
-                Featured Model
-              </div>
-            )}
           </div>
 
-          {/* Thumbnail Strip */}
+          {/* Thumbnails */}
           {galleryImages.length > 1 && (
             <div className="flex items-center gap-3 overflow-x-auto pb-2">
               {galleryImages.map((imgUrl, idx) => (
                 <button
                   key={idx}
                   onClick={() => setActiveImageIndex(idx)}
-                  className={`relative w-24 h-20 rounded-lg overflow-hidden border-2 shrink-0 transition-all ${
-                    activeImageIndex === idx 
-                      ? 'border-[#d32f2f] shadow-sm opacity-100' 
-                      : 'border-gray-200 opacity-60 hover:opacity-100'
+                  className={`relative w-20 h-16 border transition-all ${
+                    activeImageIndex === idx
+                      ? 'border-[#D32F2F] opacity-100'
+                      : 'border-[#E5E5E5] opacity-60 hover:opacity-100'
                   }`}
                 >
-                  <Image src={imgUrl} alt={`Thumbnail ${idx}`} fill className="object-cover" />
+                  <Image src={imgUrl} alt={`Thumb ${idx}`} fill className="object-cover" />
                 </button>
               ))}
             </div>
           )}
 
-          {/* Available Color Options */}
-          {bike.available_colors && bike.available_colors.length > 0 && (
-            <div className="bg-white border border-gray-200 p-5 rounded-xl space-y-3 shadow-sm">
-              <div className="flex items-center gap-2 text-gray-900 text-xs font-bold uppercase">
-                <Palette className="w-4 h-4 text-[#d32f2f]" />
-                <span>Available Color Options</span>
+        </div>
+
+        {/* Right Column: Vehicle Configurator Panel */}
+        <div className="lg:col-span-5 space-y-8">
+          
+          <div className="space-y-2 border-b border-[#E5E5E5] pb-6">
+            <span className="text-xs uppercase tracking-[0.2em] font-bold text-[#666666] block">
+              {brand}
+            </span>
+            <h1 className="text-3xl sm:text-5xl font-bold tracking-tight uppercase text-[#0A0A0A]">
+              {modelName}
+            </h1>
+            <p className="text-xs text-[#666666] pt-1 leading-relaxed">
+              {bike.description}
+            </p>
+          </div>
+
+          {/* Price Header */}
+          <div className="space-y-1">
+            <span className="text-[11px] uppercase tracking-wider text-[#666666] block font-semibold">
+              EX-SHOWROOM STARTING PRICE
+            </span>
+            <span className="text-3xl font-bold text-[#0A0A0A] tracking-tight">
+              ₹{bike.price.toLocaleString('en-IN')}
+            </span>
+          </div>
+
+          {/* Key Specifications - Clean Rows System */}
+          <div className="space-y-3 pt-4 border-t border-[#E5E5E5]">
+            <h3 className="text-xs font-bold uppercase tracking-[0.15em] text-[#0A0A0A]">
+              TECHNICAL SPECIFICATIONS
+            </h3>
+
+            <div className="divide-y divide-[#E5E5E5] text-xs pt-1">
+              <div className="py-2.5 flex justify-between">
+                <span className="text-[#666666] font-medium uppercase">ENGINE DISPLACEMENT</span>
+                <span className="font-bold text-[#0A0A0A]">{bike.engine_capacity_cc} cc</span>
               </div>
-              <div className="flex flex-wrap gap-2">
+              <div className="py-2.5 flex justify-between">
+                <span className="text-[#666666] font-medium uppercase">MAXIMUM POWER</span>
+                <span className="font-bold text-[#0A0A0A]">{bike.power}</span>
+              </div>
+              <div className="py-2.5 flex justify-between">
+                <span className="text-[#666666] font-medium uppercase">MAXIMUM TORQUE</span>
+                <span className="font-bold text-[#0A0A0A]">{bike.torque}</span>
+              </div>
+              <div className="py-2.5 flex justify-between">
+                <span className="text-[#666666] font-medium uppercase">TRANSMISSION</span>
+                <span className="font-bold text-[#0A0A0A]">{bike.transmission}</span>
+              </div>
+              <div className="py-2.5 flex justify-between">
+                <span className="text-[#666666] font-medium uppercase">FUEL TANK / MILEAGE</span>
+                <span className="font-bold text-[#0A0A0A]">{bike.fuel_capacity} · {bike.mileage}</span>
+              </div>
+              <div className="py-2.5 flex justify-between">
+                <span className="text-[#666666] font-medium uppercase">WEIGHT</span>
+                <span className="font-bold text-[#0A0A0A]">{bike.weight || 'Standard'}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Available Colors */}
+          {bike.available_colors && bike.available_colors.length > 0 && (
+            <div className="space-y-2 pt-4 border-t border-[#E5E5E5]">
+              <h3 className="text-xs font-bold uppercase tracking-[0.15em] text-[#0A0A0A]">
+                AVAILABLE COLOURS
+              </h3>
+              <div className="flex flex-wrap gap-2 pt-1">
                 {bike.available_colors.map((color, idx) => (
                   <span
                     key={idx}
-                    className="px-3.5 py-1.5 rounded bg-gray-50 border border-gray-200 text-xs font-medium text-gray-800"
+                    className="px-3 py-1 bg-white border border-[#E5E5E5] text-xs font-medium text-[#0A0A0A]"
                   >
                     {color}
                   </span>
@@ -185,209 +219,108 @@ export default function MotorcycleDetailsPage() {
             </div>
           )}
 
-        </div>
-
-        {/* Right Column: Model Specs & Call to Actions */}
-        <div className="lg:col-span-5 space-y-6">
-          
-          <div>
-            <span className="text-xs uppercase tracking-widest text-[#d32f2f] block mb-1 font-bold">
-              Official Dealer Inventory
-            </span>
-            <h1 className="text-3xl sm:text-4xl font-black text-gray-900 leading-tight uppercase">
-              {bike.name}
-            </h1>
-            <p className="text-xs text-gray-600 mt-2">Engine: {bike.engine}</p>
-          </div>
-
-          {/* Price Header Box */}
-          <div className="bg-white border border-gray-200 p-6 rounded-xl flex items-center justify-between shadow-sm">
-            <div>
-              <span className="text-xs text-gray-500 uppercase block font-semibold">Ex-Showroom Starting Price</span>
-              <span className="text-3xl font-extrabold text-[#d32f2f] tracking-tight">
-                ₹{bike.price.toLocaleString('en-IN')}
-              </span>
-            </div>
-            <span className="px-3 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold uppercase rounded">
-              In Stock
-            </span>
-          </div>
-
-          {/* Action CTAs */}
-          <div className="space-y-3 pt-2">
-            <div className="grid grid-cols-2 gap-3">
-              <Link
-                href={`/test-ride?model=${encodeURIComponent(bike.name)}`}
-                className="py-3.5 px-4 bg-[#d32f2f] hover:bg-[#b71c1c] text-white font-bold text-xs uppercase tracking-wider rounded-md shadow-sm transition-all flex items-center justify-center gap-2 min-h-[44px]"
-              >
-                <Compass className="w-4 h-4" />
-                Book Test Ride
-              </Link>
-
+          {/* Primary Action Buttons */}
+          <div className="space-y-3 pt-4 border-t border-[#E5E5E5]">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <button
                 onClick={() => setShowEnquiryModal(true)}
-                className="py-3.5 px-4 bg-white hover:bg-gray-50 text-gray-900 border border-gray-300 font-bold text-xs uppercase tracking-wider rounded-md transition-all flex items-center justify-center gap-2 min-h-[44px]"
+                className="btn-primary w-full"
               >
-                <MessageSquare className="w-4 h-4 text-[#d32f2f]" />
-                Enquire Now
+                ENQUIRE NOW
               </button>
+
+              <Link
+                href={`/test-ride?model=${encodeURIComponent(bike.name)}`}
+                className="btn-secondary w-full"
+              >
+                BOOK TEST RIDE
+              </Link>
             </div>
 
             <WhatsAppButton
               variant="button"
-              message={`Hello, I would like to inquire about price quote and test ride availability for ${bike.name}.`}
-              label={`WhatsApp Us About ${bike.name}`}
-              className="w-full justify-center !py-3.5 !text-xs"
+              message={`Hello KOVAI MOTOBIKES, I would like to inquire about price and test ride for ${bike.name}.`}
+              label="WHATSAPP INQUIRY"
+              className="w-full"
             />
-          </div>
-
-          {/* Technical Specification Matrix */}
-          <div className="space-y-4 pt-4 border-t border-gray-200">
-            <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider border-l-2 border-[#d32f2f] pl-3">
-              KEY TECHNICAL SPECIFICATIONS
-            </h3>
-
-            <div className="grid grid-cols-2 gap-3 text-xs">
-              <div className="bg-white p-3.5 rounded-lg border border-gray-200 space-y-1 shadow-sm">
-                <span className="text-[10px] text-gray-500 uppercase block font-semibold">Engine Displacement</span>
-                <span className="text-gray-900 font-bold">{bike.engine_capacity_cc} cc</span>
-              </div>
-
-              <div className="bg-white p-3.5 rounded-lg border border-gray-200 space-y-1 shadow-sm">
-                <span className="text-[10px] text-gray-500 uppercase block font-semibold">Maximum Power</span>
-                <span className="text-gray-900 font-bold">{bike.power}</span>
-              </div>
-
-              <div className="bg-white p-3.5 rounded-lg border border-gray-200 space-y-1 shadow-sm">
-                <span className="text-[10px] text-gray-500 uppercase block font-semibold">Maximum Torque</span>
-                <span className="text-gray-900 font-bold">{bike.torque}</span>
-              </div>
-
-              <div className="bg-white p-3.5 rounded-lg border border-gray-200 space-y-1 shadow-sm">
-                <span className="text-[10px] text-gray-500 uppercase block font-semibold">Fuel Efficiency</span>
-                <span className="text-gray-900 font-bold">{bike.mileage}</span>
-              </div>
-
-              <div className="bg-white p-3.5 rounded-lg border border-gray-200 space-y-1 shadow-sm">
-                <span className="text-[10px] text-gray-500 uppercase block font-semibold">Transmission</span>
-                <span className="text-gray-900 font-bold">{bike.transmission}</span>
-              </div>
-
-              <div className="bg-white p-3.5 rounded-lg border border-gray-200 space-y-1 shadow-sm">
-                <span className="text-[10px] text-gray-500 uppercase block font-semibold">Fuel Tank Capacity</span>
-                <span className="text-gray-900 font-bold">{bike.fuel_capacity}</span>
-              </div>
-
-              <div className="bg-white p-3.5 rounded-lg border border-gray-200 space-y-1 shadow-sm">
-                <span className="text-[10px] text-gray-500 uppercase block font-semibold">Braking System</span>
-                <span className="text-gray-900 font-bold">{bike.brakes}</span>
-              </div>
-
-              <div className="bg-white p-3.5 rounded-lg border border-gray-200 space-y-1 shadow-sm">
-                <span className="text-[10px] text-gray-500 uppercase block font-semibold">Seat Height / Weight</span>
-                <span className="text-gray-900 font-bold">{bike.seat_height || 'N/A'} / {bike.weight || 'N/A'}</span>
-              </div>
-            </div>
           </div>
 
         </div>
 
       </div>
 
-      {/* Description Section */}
-      <div className="bg-white border border-gray-200 p-8 rounded-2xl space-y-4 shadow-sm">
-        <h3 className="text-xl font-bold text-gray-900 border-l-2 border-[#d32f2f] pl-3 uppercase">
-          DETAILED OVERVIEW & FEATURES
-        </h3>
-        <p className="text-gray-700 text-sm leading-relaxed whitespace-pre-line">
-          {bike.description}
-        </p>
-      </div>
-
-      {/* Direct Enquiry Modal */}
+      {/* Modal */}
       {showEnquiryModal && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
-          <div className="bg-white border border-gray-200 rounded-2xl p-5 sm:p-8 max-w-lg w-full max-h-[90vh] overflow-y-auto space-y-6 relative shadow-2xl">
+        <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
+          <div className="bg-white border border-[#E5E5E5] p-6 sm:p-8 max-w-md w-full relative space-y-5">
             <button
               onClick={() => setShowEnquiryModal(false)}
-              className="absolute top-6 right-6 p-2 text-gray-400 hover:text-gray-700"
+              className="absolute top-4 right-4 text-gray-400 hover:text-[#0A0A0A]"
             >
               <X className="w-5 h-5" />
             </button>
 
             <div>
-              <span className="text-xs uppercase tracking-widest text-[#d32f2f] block mb-1 font-bold">
-                Model Enquiry
+              <span className="text-[10px] uppercase tracking-widest text-[#D32F2F] font-bold block mb-1">
+                ENQUIRE NOW
               </span>
-              <h3 className="text-xl font-bold text-gray-900">{bike.name}</h3>
+              <h3 className="text-xl font-bold text-[#0A0A0A] uppercase">{bike.name}</h3>
             </div>
 
             {formStatus === 'success' ? (
-              <div className="p-6 bg-emerald-50 border border-emerald-200 rounded-xl text-center space-y-2">
-                <Check className="w-8 h-8 text-emerald-600 mx-auto" />
-                <h4 className="text-base font-bold text-gray-900">Enquiry Received!</h4>
-                <p className="text-xs text-gray-600">Our dealership team will contact you shortly.</p>
+              <div className="p-6 bg-emerald-50 border border-emerald-200 text-center space-y-2">
+                <Check className="w-6 h-6 text-emerald-600 mx-auto" />
+                <h4 className="text-sm font-bold text-[#0A0A0A] uppercase">Enquiry Received</h4>
               </div>
             ) : (
-              <form onSubmit={handleEnquirySubmit} className="space-y-4 text-left">
+              <form onSubmit={handleEnquirySubmit} className="space-y-4 text-xs">
                 {formError && (
-                  <div className="p-3 bg-red-50 border border-red-200 rounded-md text-red-800 text-xs font-semibold flex items-center gap-2">
-                    <AlertCircle className="w-4 h-4 text-[#d32f2f] shrink-0" />
+                  <div className="p-3 bg-red-50 border border-red-200 text-red-800 font-semibold flex items-center gap-2">
+                    <AlertCircle className="w-4 h-4 text-[#D32F2F] shrink-0" />
                     <span>{formError}</span>
                   </div>
                 )}
                 <div>
-                  <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Full Name *</label>
+                  <label className="block text-[#0A0A0A] font-bold uppercase mb-1">Full Name *</label>
                   <input
                     type="text"
                     required
                     value={form.name}
                     onChange={(e) => setForm({ ...form, name: e.target.value })}
                     placeholder="e.g. Ramesh Kumar"
-                    className="w-full bg-white border border-gray-300 rounded-md px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:border-[#d32f2f] focus:ring-1 focus:ring-[#d32f2f]"
+                    className="input-field"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Phone Number *</label>
+                  <label className="block text-[#0A0A0A] font-bold uppercase mb-1">Phone Number *</label>
                   <input
                     type="tel"
                     required
                     value={form.phone}
                     onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                    placeholder="+91 98422 00000"
-                    className="w-full bg-white border border-gray-300 rounded-md px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:border-[#d32f2f] focus:ring-1 focus:ring-[#d32f2f]"
+                    placeholder="+91 98422 12345"
+                    className="input-field"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Email Address</label>
-                  <input
-                    type="email"
-                    value={form.email}
-                    onChange={(e) => setForm({ ...form, email: e.target.value })}
-                    placeholder="ramesh@example.com"
-                    className="w-full bg-white border border-gray-300 rounded-md px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:border-[#d32f2f] focus:ring-1 focus:ring-[#d32f2f]"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Message</label>
+                  <label className="block text-[#0A0A0A] font-bold uppercase mb-1">Message</label>
                   <textarea
                     rows={3}
                     value={form.message}
                     onChange={(e) => setForm({ ...form, message: e.target.value })}
-                    placeholder={`Inquire about financing options or delivery date for ${bike.name}...`}
-                    className="w-full bg-white border border-gray-300 rounded-md px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:border-[#d32f2f] focus:ring-1 focus:ring-[#d32f2f]"
+                    placeholder="Ask about pricing or delivery schedule..."
+                    className="input-field"
                   />
                 </div>
 
                 <button
                   type="submit"
                   disabled={formStatus === 'submitting'}
-                  className="w-full py-3 bg-[#d32f2f] hover:bg-[#b71c1c] text-white font-bold text-sm uppercase rounded-md transition-all min-h-[44px]"
+                  className="btn-primary w-full"
                 >
-                  {formStatus === 'submitting' ? 'Submitting...' : 'Submit Enquiry'}
+                  {formStatus === 'submitting' ? 'SUBMITTING...' : 'SUBMIT ENQUIRY'}
                 </button>
               </form>
             )}

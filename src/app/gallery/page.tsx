@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { GalleryImage } from '@/lib/types';
 import { fetchGalleryImages } from '@/lib/data-store';
 import Lightbox from '@/components/common/Lightbox';
-import { ImageIcon, Maximize2 } from 'lucide-react';
+import { Maximize2, ImageIcon } from 'lucide-react';
 import { showroomConfig } from '@/config/showroom';
 
 export default function GalleryPage() {
@@ -13,7 +13,7 @@ export default function GalleryPage() {
   const [activeCategory, setActiveCategory] = useState<string>('All');
   const [loading, setLoading] = useState(true);
 
-  // Lightbox state
+  // Lightbox index
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   useEffect(() => {
@@ -37,31 +37,31 @@ export default function GalleryPage() {
     : images.filter((img) => img.category === activeCategory);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10 font-sans">
+    <div className="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 space-y-12 font-sans bg-[#F6F6F4] text-[#0A0A0A]">
       
       {/* Header */}
-      <div className="border-b border-gray-200 pb-8 space-y-3">
-        <span className="text-xs uppercase tracking-widest text-[#d32f2f] block font-bold">
-          Visual Gallery
+      <div className="border-b border-[#E5E5E5] pb-8 space-y-3">
+        <span className="text-xs uppercase tracking-[0.2em] font-bold text-[#D32F2F] block">
+          PHOTOGRAPHY
         </span>
-        <h1 className="text-3xl sm:text-5xl font-black text-gray-900 tracking-tight uppercase">
-          SHOWROOM & DELIVERY MOMENTS
+        <h1 className="text-3xl sm:text-5xl font-bold tracking-tight text-[#0A0A0A] uppercase">
+          SHOWROOM & DELIVERIES
         </h1>
-        <p className="text-gray-600 text-sm max-w-2xl leading-relaxed">
-          Photographs from our showroom floor at Podanur Main Road, workshop service bays, and vehicle delivery celebrations at {showroomConfig.name}.
+        <p className="text-[#666666] text-sm max-w-xl leading-relaxed">
+          Real moments from {showroomConfig.name} showroom, workshop service bays, and vehicle handovers.
         </p>
       </div>
 
-      {/* Category Tabs */}
+      {/* Understated Category Tabs */}
       <div className="flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar">
         {categories.map((cat) => (
           <button
             key={cat}
             onClick={() => setActiveCategory(cat)}
-            className={`px-5 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider whitespace-nowrap transition-all ${
+            className={`text-xs uppercase tracking-wider font-bold px-4 py-2 transition-colors border ${
               activeCategory === cat
-                ? 'bg-[#d32f2f] text-white shadow-sm'
-                : 'bg-gray-100 text-gray-700 hover:text-gray-900 hover:bg-gray-200/80 border border-gray-200'
+                ? 'bg-[#0A0A0A] text-white border-[#0A0A0A]'
+                : 'bg-white text-[#666666] hover:text-[#0A0A0A] border-[#E5E5E5]'
             }`}
           >
             {cat}
@@ -69,11 +69,11 @@ export default function GalleryPage() {
         ))}
       </div>
 
-      {/* Editorial Gallery Grid */}
+      {/* Editorial Asymmetric Photo Grid */}
       {loading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 animate-pulse">
           {[1, 2, 3, 4, 5, 6].map((i) => (
-            <div key={i} className="h-72 bg-gray-100 rounded-xl border border-gray-200" />
+            <div key={i} className="h-80 bg-gray-200 border border-gray-300" />
           ))}
         </div>
       ) : filteredImages.length > 0 ? (
@@ -82,46 +82,40 @@ export default function GalleryPage() {
             <div
               key={img.id}
               onClick={() => setLightboxIndex(idx)}
-              className={`group relative rounded-xl overflow-hidden border border-gray-200 bg-white cursor-pointer shadow-sm hover:shadow-md transition-all ${
-                idx === 0 ? 'h-80 sm:h-96 sm:col-span-2' : 'h-80'
+              className={`group relative border border-[#E5E5E5] bg-[#0A0A0A] cursor-pointer overflow-hidden ${
+                idx % 4 === 0 ? 'h-96 sm:col-span-2' : 'h-80'
               }`}
             >
               <Image
                 src={img.image_url}
                 alt={img.title}
                 fill
-                className="object-cover group-hover:scale-105 transition-transform duration-500"
+                className="object-cover group-hover:scale-105 transition-transform duration-500 opacity-90 group-hover:opacity-100"
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
               />
 
-              {/* Gradient Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent p-5 flex flex-col justify-end opacity-90 group-hover:opacity-100 transition-opacity">
-                <div className="flex items-center justify-between">
+              {/* Subtle Dark Gradient Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent p-6 flex flex-col justify-end">
+                <div className="flex items-end justify-between">
                   <div>
-                    <span className="text-[10px] uppercase tracking-widest text-red-400 font-bold block">
+                    <span className="text-[10px] uppercase tracking-widest text-[#D32F2F] font-bold block">
                       {img.category}
                     </span>
                     <h3 className="text-sm font-bold text-white uppercase">{img.title}</h3>
                   </div>
 
-                  <div className="p-2 rounded-md bg-white/20 text-white group-hover:bg-[#d32f2f] transition-colors backdrop-blur-md">
-                    <Maximize2 className="w-4 h-4" />
+                  <div className="p-2 text-white bg-black/40 border border-white/20 group-hover:bg-[#D32F2F] transition-colors">
+                    <Maximize2 className="w-3.5 h-3.5" />
                   </div>
                 </div>
-
-                {img.caption && (
-                  <p className="text-xs text-gray-200 mt-1 line-clamp-1 opacity-90">
-                    {img.caption}
-                  </p>
-                )}
               </div>
             </div>
           ))}
         </div>
       ) : (
-        <div className="text-center py-16 bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
-          <ImageIcon className="w-12 h-12 text-gray-400 mx-auto mb-2" />
-          <h3 className="text-base font-bold text-gray-900">No photos in this category</h3>
+        <div className="text-center py-20 bg-white border border-[#E5E5E5] p-8">
+          <ImageIcon className="w-10 h-10 text-gray-400 mx-auto mb-2" />
+          <h3 className="text-sm font-bold text-[#0A0A0A] uppercase">No photographs in this category</h3>
         </div>
       )}
 

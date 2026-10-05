@@ -2,9 +2,10 @@
 
 import React, { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
+import Image from 'next/image';
 import { Motorcycle } from '@/lib/types';
 import { fetchMotorcycles, createTestRideRequest } from '@/lib/data-store';
-import { Compass, Calendar, Clock, Check, AlertCircle, ShieldCheck } from 'lucide-react';
+import { Check, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
 
 function TestRideContent() {
@@ -63,7 +64,7 @@ function TestRideContent() {
       return;
     }
     if (!formData.motorcycle_model.trim()) {
-      setErrorMessage('Please select a motorcycle model for your test ride.');
+      setErrorMessage('Please select a motorcycle model.');
       return;
     }
     if (!formData.preferred_date) {
@@ -71,7 +72,7 @@ function TestRideContent() {
       return;
     }
     if (!formData.has_license) {
-      setErrorMessage('A valid motorcycle driver license is required for test rides.');
+      setErrorMessage('A valid driver license is required for test rides.');
       return;
     }
 
@@ -91,59 +92,68 @@ function TestRideContent() {
       setStatus('success');
     } catch (err: any) {
       setStatus('error');
-      setErrorMessage(err.message || 'Failed to submit test ride request. Please try again.');
+      setErrorMessage(err.message || 'Failed to submit test ride request.');
     }
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8 font-sans">
+    <div className="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 space-y-12 font-sans bg-[#F6F6F4] text-[#0A0A0A]">
       
-      {/* Header */}
-      <div className="text-center space-y-3">
-        <span className="text-xs uppercase tracking-widest text-[#d32f2f] block font-bold">
-          VIP Test Drive Experience
-        </span>
-        <h1 className="text-3xl sm:text-5xl font-black text-gray-900 uppercase tracking-tight">
-          BOOK YOUR TEST RIDE
-        </h1>
-        <p className="text-gray-600 text-sm max-w-lg mx-auto leading-relaxed">
-          Experience handling, acceleration, and ergonomics firsthand at KOVAI MOTOBIKES. Select your preferred model and schedule your visit.
-        </p>
+      {/* Top Editorial Hero Banner */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-[#0A0A0A] text-white p-8 md:p-12">
+        <div className="lg:col-span-7 space-y-3">
+          <span className="text-xs uppercase tracking-[0.2em] font-bold text-[#D32F2F] block">
+            EXPERIENCE
+          </span>
+          <h1 className="text-4xl sm:text-6xl font-bold tracking-tight uppercase leading-none">
+            TAKE THE NEXT RIDE.
+          </h1>
+          <p className="text-xs sm:text-sm text-gray-300 max-w-lg leading-relaxed font-normal">
+            Experience acceleration, braking, and real-road handling at KOVAI MOTOBIKES. Select your preferred vehicle and schedule your visit.
+          </p>
+        </div>
+
+        <div className="lg:col-span-5 relative h-64 border border-white/20 overflow-hidden">
+          <Image
+            src="/images/hero-bike.jpg"
+            alt="Motorcycle Test Ride"
+            fill
+            className="object-cover"
+          />
+        </div>
       </div>
 
       {status === 'success' ? (
-        <div className="bg-white border border-emerald-300 p-8 rounded-2xl text-center space-y-6 shadow-sm animate-in fade-in duration-300">
-          <div className="w-16 h-16 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center mx-auto">
-            <Check className="w-8 h-8" />
-          </div>
+        <div className="bg-white border border-emerald-300 p-8 sm:p-12 text-center space-y-6 max-w-xl mx-auto">
+          <Check className="w-10 h-10 text-emerald-600 mx-auto" />
 
           <div className="space-y-2">
-            <h2 className="text-2xl font-black text-gray-900 uppercase">TEST RIDE SCHEDULED!</h2>
-            <p className="text-sm text-gray-600">
-              Our sales representative will prepare your bike for test riding on the requested date.
+            <h2 className="text-xl font-bold text-[#0A0A0A] uppercase">TEST RIDE SCHEDULED</h2>
+            <p className="text-xs text-[#666666]">
+              Our sales representative will prepare your target bike on the requested date.
             </p>
           </div>
 
-          <div className="bg-gray-50 border border-gray-200 p-6 rounded-xl max-w-md mx-auto text-left space-y-2 text-xs text-gray-800">
-            <div className="flex justify-between border-b border-gray-200 pb-2">
-              <span className="text-gray-500 font-semibold">Request Reference:</span>
-              <span className="text-[#d32f2f] font-bold">{requestRef}</span>
+          <div className="bg-[#F6F6F4] border border-[#E5E5E5] p-5 text-left text-xs space-y-2">
+            <div className="flex justify-between border-b border-[#E5E5E5] pb-2">
+              <span className="text-[#666666] font-semibold">Reference:</span>
+              <span className="text-[#D32F2F] font-bold">{requestRef}</span>
             </div>
-            <div className="flex justify-between border-b border-gray-200 pb-2">
-              <span className="text-gray-500 font-semibold">Customer:</span>
-              <span className="text-gray-900 font-bold">{formData.customer_name}</span>
+            <div className="flex justify-between border-b border-[#E5E5E5] pb-2">
+              <span className="text-[#666666] font-semibold">Customer:</span>
+              <span className="text-[#0A0A0A] font-bold">{formData.customer_name}</span>
             </div>
-            <div className="flex justify-between border-b border-gray-200 pb-2">
-              <span className="text-gray-500 font-semibold">Target Model:</span>
-              <span className="text-gray-900 font-bold">{formData.motorcycle_model}</span>
+            <div className="flex justify-between border-b border-[#E5E5E5] pb-2">
+              <span className="text-[#666666] font-semibold">Model:</span>
+              <span className="text-[#0A0A0A] font-bold">{formData.motorcycle_model}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-500 font-semibold">Date & Slot:</span>
-              <span className="text-emerald-700 font-bold">{formData.preferred_date} @ {formData.preferred_time}</span>
+              <span className="text-[#666666] font-semibold">Scheduled Date:</span>
+              <span className="text-[#0A0A0A] font-bold">{formData.preferred_date} @ {formData.preferred_time}</span>
             </div>
           </div>
 
-          <div className="pt-4 flex flex-wrap justify-center gap-4">
+          <div className="pt-2 flex justify-center gap-4">
             <button
               onClick={() => {
                 setStatus('idle');
@@ -158,176 +168,136 @@ function TestRideContent() {
                   message: ''
                 });
               }}
-              className="px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold text-xs uppercase rounded-md border border-gray-300"
+              className="btn-secondary !h-10 !px-4"
             >
               Book Another Ride
             </button>
-            <Link
-              href="/motorcycles"
-              className="px-6 py-3 bg-[#d32f2f] hover:bg-[#b71c1c] text-white font-bold text-xs uppercase rounded-md shadow-sm"
-            >
-              Browse Inventory
+            <Link href="/motorcycles" className="btn-primary !h-10 !px-4">
+              Browse Catalogue
             </Link>
           </div>
         </div>
       ) : (
-        <div className="bg-white border border-gray-200 p-6 sm:p-10 rounded-2xl shadow-sm space-y-6">
+        <div className="bg-white border border-[#E5E5E5] p-8 sm:p-12 max-w-2xl mx-auto space-y-6">
           
           {errorMessage && (
-            <div className="p-4 bg-red-50 border border-red-200 rounded-md text-red-800 text-xs font-semibold flex items-center gap-2">
-              <AlertCircle className="w-5 h-5 text-[#d32f2f] shrink-0" />
+            <div className="p-3.5 bg-red-50 border border-red-200 text-red-800 text-xs font-semibold flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 text-[#D32F2F] shrink-0" />
               <span>{errorMessage}</span>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6 text-xs">
             
-            {/* Model Selection */}
-            <div className="space-y-4">
-              <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider border-l-2 border-[#d32f2f] pl-3">
-                1. SELECT MOTORCYCLE MODEL
-              </h3>
-              
+            <div>
+              <label className="block text-[#0A0A0A] font-bold uppercase mb-1">
+                Motorcycle Model *
+              </label>
+              <select
+                value={formData.motorcycle_model}
+                onChange={(e) => setFormData({ ...formData, motorcycle_model: e.target.value })}
+                className="input-field"
+              >
+                {motorcycles.map((m) => (
+                  <option key={m.id} value={m.name}>
+                    {m.name} ({m.category})
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
-                  Target Motorcycle Model *
+                <label className="block text-[#0A0A0A] font-bold uppercase mb-1">
+                  Full Name *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={formData.customer_name}
+                  onChange={(e) => setFormData({ ...formData, customer_name: e.target.value })}
+                  placeholder="e.g. Ramesh Kumar"
+                  className="input-field"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[#0A0A0A] font-bold uppercase mb-1">
+                  Phone Number *
+                </label>
+                <input
+                  type="tel"
+                  required
+                  value={formData.phone}
+                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  placeholder="+91 98422 12345"
+                  className="input-field"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-[#0A0A0A] font-bold uppercase mb-1">
+                  Preferred Date *
+                </label>
+                <input
+                  type="date"
+                  required
+                  min={new Date().toISOString().split('T')[0]}
+                  value={formData.preferred_date}
+                  onChange={(e) => setFormData({ ...formData, preferred_date: e.target.value })}
+                  className="input-field"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[#0A0A0A] font-bold uppercase mb-1">
+                  Time Slot *
                 </label>
                 <select
-                  value={formData.motorcycle_model}
-                  onChange={(e) => setFormData({ ...formData, motorcycle_model: e.target.value })}
-                  className="w-full bg-white border border-gray-300 rounded-md px-4 py-3 text-sm text-gray-900 focus:outline-none focus:border-[#d32f2f] focus:ring-1 focus:ring-[#d32f2f]"
+                  value={formData.preferred_time}
+                  onChange={(e) => setFormData({ ...formData, preferred_time: e.target.value })}
+                  className="input-field"
                 >
-                  {motorcycles.map((m) => (
-                    <option key={m.id} value={m.name}>
-                      {m.name} ({m.category} - {m.engine_capacity_cc}cc)
-                    </option>
+                  {timeSlots.map((t) => (
+                    <option key={t} value={t}>{t}</option>
                   ))}
-                  <option value="Other Model / Special Inquiry">Other Model / Custom Inquiry</option>
                 </select>
               </div>
             </div>
 
-            {/* Rider Details */}
-            <div className="space-y-4 pt-4 border-t border-gray-100">
-              <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider border-l-2 border-[#d32f2f] pl-3">
-                2. RIDER CONTACT DETAILS
-              </h3>
-
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div>
-                  <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
-                    Full Name *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={formData.customer_name}
-                    onChange={(e) => setFormData({ ...formData, customer_name: e.target.value })}
-                    placeholder="e.g. Ramesh Kumar"
-                    className="w-full bg-white border border-gray-300 rounded-md px-4 py-3 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#d32f2f] focus:ring-1 focus:ring-[#d32f2f]"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
-                    Phone Number *
-                  </label>
-                  <input
-                    type="tel"
-                    required
-                    value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    placeholder="+91 98422 00000"
-                    className="w-full bg-white border border-gray-300 rounded-md px-4 py-3 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#d32f2f] focus:ring-1 focus:ring-[#d32f2f]"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
-                    Email Address
-                  </label>
-                  <input
-                    type="email"
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    placeholder="ramesh@example.com"
-                    className="w-full bg-white border border-gray-300 rounded-md px-4 py-3 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#d32f2f] focus:ring-1 focus:ring-[#d32f2f]"
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Date & Time */}
-            <div className="space-y-4 pt-4 border-t border-gray-100">
-              <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider border-l-2 border-[#d32f2f] pl-3">
-                3. PREFERRED DATE & TIME
-              </h3>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
-                    Preferred Date *
-                  </label>
-                  <input
-                    type="date"
-                    required
-                    min={new Date().toISOString().split('T')[0]}
-                    value={formData.preferred_date}
-                    onChange={(e) => setFormData({ ...formData, preferred_date: e.target.value })}
-                    className="w-full bg-white border border-gray-300 rounded-md px-4 py-3 text-sm text-gray-900 focus:outline-none focus:border-[#d32f2f] focus:ring-1 focus:ring-[#d32f2f]"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
-                    Preferred Time Slot *
-                  </label>
-                  <select
-                    value={formData.preferred_time}
-                    onChange={(e) => setFormData({ ...formData, preferred_time: e.target.value })}
-                    className="w-full bg-white border border-gray-300 rounded-md px-4 py-3 text-sm text-gray-900 focus:outline-none focus:border-[#d32f2f] focus:ring-1 focus:ring-[#d32f2f]"
-                  >
-                    {timeSlots.map((t) => (
-                      <option key={t} value={t}>{t}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
-                  Rider Notes or Riding Experience
-                </label>
-                <textarea
-                  rows={3}
-                  value={formData.message}
-                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                  placeholder="Tell us if you have trade-in questions or specific riding gear requirements..."
-                  className="w-full bg-white border border-gray-300 rounded-md px-4 py-3 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#d32f2f] focus:ring-1 focus:ring-[#d32f2f]"
-                />
-              </div>
-
-              {/* License Checkbox */}
-              <label className="flex items-center gap-3 p-4 bg-gray-50 border border-gray-200 rounded-md cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={formData.has_license}
-                  onChange={(e) => setFormData({ ...formData, has_license: e.target.checked })}
-                  className="w-4 h-4 accent-[#d32f2f] rounded"
-                />
-                <span className="text-xs text-gray-700">
-                  I confirm that I possess a valid motorcycle driver's license and agree to wear protective helmet/gear during the test ride.
-                </span>
+            <div>
+              <label className="block text-[#0A0A0A] font-bold uppercase mb-1">
+                Rider Experience / Notes
               </label>
+              <textarea
+                rows={3}
+                value={formData.message}
+                onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                placeholder="Mention any specific trade-in or model questions..."
+                className="input-field"
+              />
             </div>
+
+            <label className="flex items-center gap-3 p-3.5 bg-[#F6F6F4] border border-[#E5E5E5] cursor-pointer">
+              <input
+                type="checkbox"
+                checked={formData.has_license}
+                onChange={(e) => setFormData({ ...formData, has_license: e.target.checked })}
+                className="w-4 h-4 accent-[#D32F2F]"
+              />
+              <span className="text-[11px] text-[#666666]">
+                I confirm that I possess a valid two-wheeler driving license.
+              </span>
+            </label>
 
             <button
               type="submit"
               disabled={status === 'submitting'}
-              className="w-full py-4 bg-[#d32f2f] hover:bg-[#b71c1c] text-white font-bold text-sm uppercase tracking-wider rounded-md shadow-sm transition-all flex items-center justify-center gap-2 min-h-[44px]"
+              className="btn-primary w-full"
             >
-              <Compass className="w-5 h-5" />
-              {status === 'submitting' ? 'Booking Test Ride...' : 'Confirm Test Ride Booking'}
+              {status === 'submitting' ? 'REQUESTING...' : 'REQUEST TEST RIDE'}
             </button>
 
           </form>
@@ -340,7 +310,7 @@ function TestRideContent() {
 
 export default function TestRidePage() {
   return (
-    <Suspense fallback={<div className="max-w-4xl mx-auto py-20 text-center font-mono text-gray-400">Loading test ride form...</div>}>
+    <Suspense fallback={<div className="max-w-4xl mx-auto py-24 text-center font-mono text-gray-400">Loading form...</div>}>
       <TestRideContent />
     </Suspense>
   );

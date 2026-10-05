@@ -12,10 +12,10 @@ interface WhatsAppButtonProps {
 }
 
 export default function WhatsAppButton({
-  message = "Hello! I would like to inquire about motorcycle availability and services at your showroom.",
+  message = "Hello! I would like to inquire about motorcycle availability and services at KOVAI MOTOBIKES.",
   className = "",
   variant = 'floating',
-  label = "WhatsApp Us"
+  label = "WhatsApp Sales"
 }: WhatsAppButtonProps) {
   const cleanNumber = showroomConfig.whatsapp.replace(/[^0-9]/g, '');
   const encodedMessage = encodeURIComponent(message);
@@ -27,9 +27,9 @@ export default function WhatsAppButton({
         href={whatsappUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className={`inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-5 py-2.5 rounded-lg shadow-lg shadow-emerald-600/30 transition-all duration-200 hover:scale-105 active:scale-95 ${className}`}
+        className={`inline-flex items-center justify-center gap-2 bg-[#0F6F5F] hover:bg-[#0C594C] text-white font-bold text-xs uppercase tracking-wider h-[46px] px-5 rounded-[4px] transition-colors duration-200 ${className}`}
       >
-        <MessageSquare className="w-5 h-5 fill-current" />
+        <MessageSquare className="w-4 h-4 shrink-0" />
         <span>{label}</span>
       </a>
     );
@@ -41,11 +41,11 @@ export default function WhatsAppButton({
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Contact us on WhatsApp"
-      className="fixed bottom-6 right-6 z-50 group flex items-center gap-3 bg-emerald-600 hover:bg-emerald-500 text-white p-3.5 rounded-full shadow-2xl shadow-emerald-600/50 transition-all duration-300 hover:scale-110 active:scale-95 border-2 border-white/20"
+      className="fixed bottom-6 right-6 z-40 flex items-center gap-2 bg-[#0A0A0A] text-white hover:bg-[#151515] border border-white/20 px-4 py-3 rounded-[4px] shadow-lg transition-all duration-200"
     >
-      <MessageSquare className="w-6 h-6 fill-current" />
-      <span className="max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-300 ease-in-out whitespace-nowrap text-xs font-extrabold uppercase tracking-wider pr-1">
-        Chat with Sales & Service
+      <MessageSquare className="w-4 h-4 text-emerald-400 shrink-0" />
+      <span className="text-xs font-bold uppercase tracking-wider">
+        WHATSAPP
       </span>
     </a>
   );

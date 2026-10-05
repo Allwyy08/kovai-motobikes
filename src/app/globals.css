@@ -2,31 +2,34 @@
 
 @layer base {
   :root {
-    --background: #ffffff;
-    --foreground: #111827;
-    --brand-red: #d32f2f;
-    --brand-red-hover: #b71c1c;
-    --card-bg: #ffffff;
-    --card-border: #e5e7eb;
+    --bg-primary: #ffffff;
+    --bg-secondary: #f6f6f4;
+    --bg-dark: #0a0a0a;
+    --bg-charcoal: #151515;
+    --red-primary: #d32f2f;
+    --red-hover: #b71c1c;
+    --text-primary: #0a0a0a;
+    --text-secondary: #666666;
+    --border-subtle: #e5e5e5;
   }
 }
 
 body {
-  background-color: var(--background);
-  color: var(--foreground);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, "Geist", "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Custom scrollbar */
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 ::-webkit-scrollbar-track {
-  background: #f3f4f6;
+  background: #f6f6f4;
 }
 ::-webkit-scrollbar-thumb {
   background: #d1d5db;
@@ -36,71 +39,134 @@ body {
   background: #d32f2f;
 }
 
-/* Light Theme Automotive Precision Cards & Panels */
-.kmb-card {
-  background-color: #ffffff;
-  border: 1px solid #e5e7eb;
-  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.kmb-card:hover {
-  border-color: #d32f2f;
-  transform: translateY(-2px);
-  box-shadow: 0 10px 25px -5px rgba(211, 47, 47, 0.08);
-}
-
-.kmb-panel {
-  background-color: #f8f9fa;
-  border: 1px solid #e5e7eb;
-}
-
-/* Automotive Action Buttons */
-.kmb-btn-primary {
+/* Automotive Design System Utilities */
+.btn-primary {
   background-color: #d32f2f;
   color: #ffffff;
+  height: 46px;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  border-radius: 6px;
-  transition: all 0.2s ease;
+  letter-spacing: 0.08em;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  box-shadow: none;
 }
-.kmb-btn-primary:hover {
+.btn-primary:hover {
   background-color: #b71c1c;
-  box-shadow: 0 4px 15px rgba(211, 47, 47, 0.25);
 }
 
-.kmb-btn-secondary {
-  background-color: #ffffff;
-  color: #111827;
+.btn-secondary {
+  background-color: transparent;
+  color: #0a0a0a;
+  height: 46px;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  border-radius: 4px;
+  border: 1px solid #151515;
+  font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
+  letter-spacing: 0.08em;
   transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
 }
-.kmb-btn-secondary:hover {
-  background-color: #f9fafb;
-  border-color: #9ca3af;
+.btn-secondary:hover {
+  background-color: #0a0a0a;
+  color: #ffffff;
 }
 
-/* Stagger Animations */
+.btn-secondary-light {
+  background-color: transparent;
+  color: #ffffff;
+  height: 46px;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+.btn-secondary-light:hover {
+  background-color: #ffffff;
+  color: #0a0a0a;
+  border-color: #ffffff;
+}
+
+/* Premium Text Links with Arrow */
+.link-arrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #0a0a0a;
+  transition: color 0.2s ease;
+}
+.link-arrow:hover {
+  color: #d32f2f;
+}
+.link-arrow .arrow-icon {
+  transition: transform 0.2s ease;
+}
+.link-arrow:hover .arrow-icon {
+  transform: translateX(4px);
+}
+
+/* Form Inputs */
+.input-field {
+  width: 100%;
+  background-color: #ffffff;
+  border: 1px solid #e5e5e5;
+  border-radius: 4px;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  color: #0a0a0a;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.input-field:focus {
+  outline: none;
+  border-color: #d32f2f;
+}
+
+/* Animations */
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(12px);
+    transform: translateY(16px);
   }
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
-
 .animate-fade-in-up {
-  animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-.delay-100 { animation-delay: 100ms; }
-.delay-200 { animation-delay: 200ms; }
-.delay-300 { animation-delay: 300ms; }
-.delay-400 { animation-delay: 400ms; }
+/* Clean grid dividers */
+.grid-divider-x > *:not(:last-child) {
+  border-right: 1px solid #e5e5e5;
+}
+.grid-divider-y > *:not(:last-child) {
+  border-bottom: 1px solid #e5e5e5;
+}
+

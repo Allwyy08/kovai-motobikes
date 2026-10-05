@@ -1,22 +1,20 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { Motorcycle, MotorcycleCategory } from '@/lib/types';
+import { Motorcycle } from '@/lib/types';
 import { fetchMotorcycles, createCustomerEnquiry } from '@/lib/data-store';
 import MotorcycleCard from '@/components/common/MotorcycleCard';
-import { Search, Filter, SlidersHorizontal, Bike, X, Check, AlertCircle } from 'lucide-react';
+import { Search, X, Check, AlertCircle } from 'lucide-react';
 
 export default function MotorcyclesPage() {
   const [motorcycles, setMotorcycles] = useState<Motorcycle[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Filters state
+  // Filter state
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
-  const [capacityRange, setCapacityRange] = useState<string>('All');
-  const [sortBy, setSortBy] = useState<'featured' | 'price-asc' | 'price-desc' | 'capacity-desc'>('featured');
 
-  // Quick Enquiry Modal state
+  // Quick Enquiry Modal
   const [enquiryModalBike, setEnquiryModalBike] = useState<Motorcycle | null>(null);
   const [modalForm, setModalForm] = useState({ name: '', phone: '', email: '', message: '' });
   const [modalStatus, setModalStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
@@ -36,39 +34,17 @@ export default function MotorcyclesPage() {
     load();
   }, []);
 
-  const categories: string[] = ['All', 'Sport', 'Cruiser', 'Adventure', 'Naked', 'Scooter', 'Touring'];
+  const categories: string[] = ['All', 'Commuter', 'Scooter', 'Sport', 'Cruiser', 'Naked'];
 
-  const capacityOptions = [
-    { label: 'All Capacities', value: 'All' },
-    { label: 'Under 300cc', value: 'under-300' },
-    { label: '300cc - 800cc', value: '300-800' },
-    { label: '800cc - 1200cc', value: '800-1200' },
-    { label: 'Above 1200cc', value: 'above-1200' },
-  ];
-
-  // Filtering logic
   const filteredBikes = motorcycles.filter((bike) => {
-    // Search match
-    const matchesSearch = bike.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          bike.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          bike.engine.toLowerCase().includes(searchQuery.toLowerCase());
-    
-    // Category match
+    const matchesSearch =
+      bike.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      bike.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      bike.engine.toLowerCase().includes(searchQuery.toLowerCase());
+
     const matchesCategory = selectedCategory === 'All' || bike.category === selectedCategory;
 
-    // Engine capacity match
-    let matchesCapacity = true;
-    if (capacityRange === 'under-300') matchesCapacity = bike.engine_capacity_cc < 300;
-    else if (capacityRange === '300-800') matchesCapacity = bike.engine_capacity_cc >= 300 && bike.engine_capacity_cc <= 800;
-    else if (capacityRange === '800-1200') matchesCapacity = bike.engine_capacity_cc > 800 && bike.engine_capacity_cc <= 1200;
-    else if (capacityRange === 'above-1200') matchesCapacity = bike.engine_capacity_cc > 1200;
-
-    return matchesSearch && matchesCategory && matchesCapacity;
-  }).sort((a, b) => {
-    if (sortBy === 'price-asc') return a.price - b.price;
-    if (sortBy === 'price-desc') return b.price - a.price;
-    if (sortBy === 'capacity-desc') return b.engine_capacity_cc - a.engine_capacity_cc;
-    return (b.is_featured ? 1 : 0) - (a.is_featured ? 1 : 0);
+    return matchesSearch && matchesCategory;
   });
 
   const handleModalSubmit = async (e: React.FormEvent) => {
@@ -83,101 +59,69 @@ export default function MotorcyclesPage() {
         phone: modalForm.phone,
         email: modalForm.email || 'N/A',
         subject: `Enquiry for ${enquiryModalBike.name}`,
-        message: modalForm.message || `Customer inquired about pricing and availability for ${enquiryModalBike.name}.`
+        message: modalForm.message || `Customer inquired about ${enquiryModalBike.name}.`
       });
       setModalStatus('success');
       setTimeout(() => {
         setEnquiryModalBike(null);
         setModalStatus('idle');
         setModalForm({ name: '', phone: '', email: '', message: '' });
-      }, 2500);
+      }, 2000);
     } catch (e: any) {
       setModalStatus('error');
-      setModalError(e.message || 'Failed to submit enquiry. Please try again.');
+      setModalError(e.message || 'Failed to submit enquiry.');
     }
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10 font-sans">
+    <div className="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 space-y-12 font-sans bg-[#F6F6F4] text-[#0A0A0A]">
       
-      {/* Page Header */}
-      <div className="border-b border-gray-200 pb-8 space-y-3 text-left">
-        <span className="text-xs uppercase tracking-widest text-[#d32f2f] block font-bold">
-          Full Showroom Inventory
+      {/* Top Header */}
+      <div className="border-b border-[#E5E5E5] pb-8 space-y-3">
+        <span className="text-xs uppercase tracking-[0.2em] font-bold text-[#D32F2F] block">
+          CATALOGUE
         </span>
-        <h1 className="text-3xl sm:text-5xl font-black text-gray-900 tracking-tight">
-          MOTORCYCLE MODELS & CATALOGUE
+        <h1 className="text-3xl sm:text-5xl font-bold tracking-tight text-[#0A0A0A] uppercase">
+          MOTORCYCLES
         </h1>
-        <p className="text-gray-600 text-sm max-w-2xl leading-relaxed">
-          Browse our complete selection of motorcycles, scooters, commuter bikes, and performance models at KOVAI MOTOBIKES.
+        <p className="text-[#666666] text-sm max-w-xl leading-relaxed">
+          Explore our range of motorcycles and scooters.
         </p>
       </div>
 
-      {/* Control Bar: Search, Category Tabs, Filters, Sort */}
-      <div className="bg-white border border-gray-200 p-6 rounded-2xl space-y-6 shadow-sm">
+      {/* Control Bar: Search & Understated Filters */}
+      <div className="bg-white border border-[#E5E5E5] p-6 space-y-6">
         
-        {/* Search & Sort Row */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-          
-          {/* Search Bar */}
-          <div className="md:col-span-7 relative">
-            <Search className="w-5 h-5 text-gray-400 absolute left-4 top-1/2 -translate-y-1/2" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search by model name, engine specs, or keywords..."
-              className="w-full bg-white border border-gray-300 rounded-xl pl-12 pr-4 py-3 text-sm text-gray-900 focus:outline-none focus:border-[#d32f2f] focus:ring-1 focus:ring-[#d32f2f]"
-            />
-            {searchQuery && (
-              <button
-                onClick={() => setSearchQuery('')}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            )}
-          </div>
-
-          {/* Engine Capacity Dropdown */}
-          <div className="md:col-span-3">
-            <select
-              value={capacityRange}
-              onChange={(e) => setCapacityRange(e.target.value)}
-              className="w-full bg-white border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 focus:outline-none focus:border-[#d32f2f] focus:ring-1 focus:ring-[#d32f2f]"
+        {/* Search Bar */}
+        <div className="relative max-w-md">
+          <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search model name or keywords..."
+            className="input-field !pl-10 !py-2.5 text-xs"
+          />
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery('')}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#0A0A0A]"
             >
-              {capacityOptions.map((opt) => (
-                <option key={opt.value} value={opt.value}>{opt.label}</option>
-              ))}
-            </select>
-          </div>
-
-          {/* Sort By Dropdown */}
-          <div className="md:col-span-2">
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as any)}
-              className="w-full bg-white border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 focus:outline-none focus:border-[#d32f2f] focus:ring-1 focus:ring-[#d32f2f]"
-            >
-              <option value="featured">Featured First</option>
-              <option value="price-asc">Price: Low to High</option>
-              <option value="price-desc">Price: High to Low</option>
-              <option value="capacity-desc">Engine Capacity</option>
-            </select>
-          </div>
-
+              <X className="w-4 h-4" />
+            </button>
+          )}
         </div>
 
-        {/* Category Tabs */}
-        <div className="flex items-center gap-2 overflow-x-auto pt-4 border-t border-gray-100 no-scrollbar">
+        {/* Clean Understated Category Tabs */}
+        <div className="flex items-center gap-2 overflow-x-auto pt-4 border-t border-[#E5E5E5] no-scrollbar">
           {categories.map((cat) => (
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider whitespace-nowrap transition-all ${
+              className={`text-xs uppercase tracking-wider font-bold px-4 py-2 transition-colors border ${
                 selectedCategory === cat
-                  ? 'bg-[#d32f2f] text-white shadow-sm'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200/80 hover:text-gray-900 border border-gray-200'
+                  ? 'bg-[#0A0A0A] text-white border-[#0A0A0A]'
+                  : 'bg-white text-[#666666] hover:text-[#0A0A0A] border-[#E5E5E5]'
               }`}
             >
               {cat}
@@ -187,28 +131,11 @@ export default function MotorcyclesPage() {
 
       </div>
 
-      {/* Results Header */}
-      <div className="flex items-center justify-between text-xs text-gray-600">
-        <span>Showing {filteredBikes.length} {filteredBikes.length === 1 ? 'Motorcycle' : 'Motorcycles'}</span>
-        {(searchQuery || selectedCategory !== 'All' || capacityRange !== 'All') && (
-          <button
-            onClick={() => {
-              setSearchQuery('');
-              setSelectedCategory('All');
-              setCapacityRange('All');
-            }}
-            className="text-[#d32f2f] hover:underline flex items-center gap-1 font-semibold"
-          >
-            <X className="w-3.5 h-3.5" /> Reset Filters
-          </button>
-        )}
-      </div>
-
-      {/* Motorcycle Catalogue Grid */}
+      {/* Product Grid */}
       {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {[1, 2, 3, 4, 5, 6].map((i) => (
-            <div key={i} className="h-96 bg-gray-100 rounded-2xl border border-gray-200 animate-pulse" />
+            <div key={i} className="h-96 bg-gray-200 border border-gray-300 animate-pulse" />
           ))}
         </div>
       ) : filteredBikes.length > 0 ? (
@@ -222,101 +149,84 @@ export default function MotorcyclesPage() {
           ))}
         </div>
       ) : (
-        <div className="text-center py-20 bg-white rounded-2xl border border-gray-200 p-8 shadow-sm">
-          <Bike className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-xl font-bold text-gray-900">No motorcycles match your filter criteria</h3>
-          <p className="text-sm text-gray-600 mt-2 max-w-md mx-auto">
-            Try adjusting your search keywords, engine capacity range, or category filter to discover models.
-          </p>
+        <div className="text-center py-20 bg-white border border-[#E5E5E5] p-8">
+          <h3 className="text-base font-bold text-[#0A0A0A] uppercase">No motorcycles match your criteria</h3>
+          <p className="text-xs text-[#666666] mt-1">Try resetting your search or category filter.</p>
         </div>
       )}
 
       {/* Quick Enquiry Modal */}
       {enquiryModalBike && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
-          <div className="bg-white border border-gray-200 rounded-2xl p-5 sm:p-8 max-w-lg w-full max-h-[90vh] overflow-y-auto space-y-6 relative animate-in fade-in zoom-in-95 duration-200 shadow-2xl">
-            
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white border border-[#E5E5E5] p-6 sm:p-8 max-w-md w-full relative space-y-5">
             <button
               onClick={() => setEnquiryModalBike(null)}
-              className="absolute top-6 right-6 p-2 text-gray-400 hover:text-gray-700"
+              className="absolute top-4 right-4 text-gray-400 hover:text-[#0A0A0A]"
             >
               <X className="w-5 h-5" />
             </button>
 
             <div>
-              <span className="text-xs uppercase tracking-widest text-[#d32f2f] block mb-1 font-bold">
-                Quick Model Enquiry
+              <span className="text-[10px] uppercase tracking-widest text-[#D32F2F] font-bold block mb-1">
+                ENQUIRY
               </span>
-              <h3 className="text-xl font-bold text-gray-900">{enquiryModalBike.name}</h3>
-              <p className="text-xs text-gray-600 mt-1">Starting Price: ₹{enquiryModalBike.price.toLocaleString('en-IN')}</p>
+              <h3 className="text-xl font-bold text-[#0A0A0A] uppercase">{enquiryModalBike.name}</h3>
             </div>
 
             {modalStatus === 'success' ? (
-              <div className="p-6 bg-emerald-50 border border-emerald-200 rounded-xl text-center space-y-2">
-                <Check className="w-8 h-8 text-emerald-600 mx-auto" />
-                <h4 className="text-base font-bold text-gray-900">Enquiry Sent!</h4>
-                <p className="text-xs text-gray-600">We will reach out to you with details on {enquiryModalBike.name}.</p>
+              <div className="p-6 bg-emerald-50 border border-emerald-200 text-center space-y-2">
+                <Check className="w-6 h-6 text-emerald-600 mx-auto" />
+                <h4 className="text-sm font-bold text-[#0A0A0A] uppercase">Enquiry Sent</h4>
               </div>
             ) : (
-              <form onSubmit={handleModalSubmit} className="space-y-4 text-left">
+              <form onSubmit={handleModalSubmit} className="space-y-4 text-xs">
                 {modalError && (
-                  <div className="p-3 bg-red-50 border border-red-200 rounded-md text-red-800 text-xs font-semibold flex items-center gap-2">
-                    <AlertCircle className="w-4 h-4 text-[#d32f2f] shrink-0" />
+                  <div className="p-3 bg-red-50 border border-red-200 text-red-800 font-semibold flex items-center gap-2">
+                    <AlertCircle className="w-4 h-4 text-[#D32F2F] shrink-0" />
                     <span>{modalError}</span>
                   </div>
                 )}
                 <div>
-                  <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Your Name *</label>
+                  <label className="block text-[#0A0A0A] font-bold uppercase mb-1">Your Name *</label>
                   <input
                     type="text"
                     required
                     value={modalForm.name}
                     onChange={(e) => setModalForm({ ...modalForm, name: e.target.value })}
                     placeholder="e.g. Ramesh Kumar"
-                    className="w-full bg-white border border-gray-300 rounded-md px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:border-[#d32f2f] focus:ring-1 focus:ring-[#d32f2f]"
+                    className="input-field"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Phone Number *</label>
+                  <label className="block text-[#0A0A0A] font-bold uppercase mb-1">Phone Number *</label>
                   <input
                     type="tel"
                     required
                     value={modalForm.phone}
                     onChange={(e) => setModalForm({ ...modalForm, phone: e.target.value })}
-                    placeholder="+91 98422 00000"
-                    className="w-full bg-white border border-gray-300 rounded-md px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:border-[#d32f2f] focus:ring-1 focus:ring-[#d32f2f]"
+                    placeholder="+91 98422 12345"
+                    className="input-field"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Email Address</label>
-                  <input
-                    type="email"
-                    value={modalForm.email}
-                    onChange={(e) => setModalForm({ ...modalForm, email: e.target.value })}
-                    placeholder="ramesh@example.com"
-                    className="w-full bg-white border border-gray-300 rounded-md px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:border-[#d32f2f] focus:ring-1 focus:ring-[#d32f2f]"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Additional Message</label>
+                  <label className="block text-[#0A0A0A] font-bold uppercase mb-1">Message</label>
                   <textarea
                     rows={3}
                     value={modalForm.message}
                     onChange={(e) => setModalForm({ ...modalForm, message: e.target.value })}
-                    placeholder="Ask about financing, colors, or availability date..."
-                    className="w-full bg-white border border-gray-300 rounded-md px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:border-[#d32f2f] focus:ring-1 focus:ring-[#d32f2f]"
+                    placeholder="Inquire about delivery timeline or financing..."
+                    className="input-field"
                   />
                 </div>
 
                 <button
                   type="submit"
                   disabled={modalStatus === 'submitting'}
-                  className="w-full py-3 bg-[#d32f2f] hover:bg-[#b71c1c] text-white font-bold text-sm uppercase rounded-md transition-all shadow-sm min-h-[44px]"
+                  className="btn-primary w-full"
                 >
-                  {modalStatus === 'submitting' ? 'Sending...' : 'Send Enquiry'}
+                  {modalStatus === 'submitting' ? 'SENDING...' : 'SEND ENQUIRY'}
                 </button>
               </form>
             )}

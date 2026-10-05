@@ -4,134 +4,140 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { showroomConfig } from '@/config/showroom';
-import { 
-  Bike, 
-  Wrench, 
-  ShieldCheck, 
-  MapPin, 
-  Phone,
-  CheckCircle2
-} from 'lucide-react';
 import WhatsAppButton from '@/components/common/WhatsAppButton';
+import { ArrowRight } from 'lucide-react';
 
 export default function AboutPage() {
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-16 font-sans">
+    <div className="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 space-y-20 font-sans bg-[#F6F6F4] text-[#0A0A0A]">
       
-      {/* Header */}
-      <div className="border-b border-gray-200 pb-8 space-y-3">
-        <span className="text-xs uppercase tracking-widest text-[#d32f2f] block font-bold">
-          Dealership Profile
+      {/* Top Header */}
+      <div className="border-b border-[#E5E5E5] pb-8 space-y-3">
+        <span className="text-xs uppercase tracking-[0.2em] font-bold text-[#D32F2F] block">
+          PROFILE
         </span>
-        <h1 className="text-3xl sm:text-5xl font-black text-gray-900 tracking-tight uppercase">
-          ABOUT KOVAI MOTOBIKES
+        <h1 className="text-3xl sm:text-5xl font-bold tracking-tight text-[#0A0A0A] uppercase">
+          OUR STORY
         </h1>
-        <p className="text-gray-600 text-sm max-w-3xl leading-relaxed">
-          A professional two-wheeler sales and service destination in Podanur Main Road, Coimbatore.
+        <p className="text-[#666666] text-sm max-w-2xl leading-relaxed">
+          {showroomConfig.name} is a dedicated two-wheeler dealership and workshop situated on Podanur Main Road, Coimbatore.
         </p>
       </div>
 
-      {/* Main Story Grid with Real Photos */}
+      {/* Main Story Hero Photo Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
         
-        {/* Left Column: Real Showroom Photograph */}
-        <div className="lg:col-span-6 relative h-[400px] rounded-2xl overflow-hidden border border-gray-200 shadow-sm bg-white">
+        {/* Real Showroom Exterior Photo */}
+        <div className="lg:col-span-6 relative h-[380px] sm:h-[440px] border border-[#E5E5E5] bg-[#0A0A0A]">
           <Image
             src="/images/showroom-exterior.png"
-            alt="KOVAI MOTOBIKES Showroom Entrance"
+            alt="KOVAI MOTOBIKES Facade"
             fill
             priority
             className="object-cover"
+            sizes="(max-width: 1024px) 100vw, 50vw"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent p-6 flex items-end">
-            <div>
-              <span className="text-[10px] uppercase text-red-400 font-bold block tracking-wider">Showroom Facade</span>
-              <h3 className="text-base font-bold text-white">{showroomConfig.name} — Podanur Main Road</h3>
-            </div>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent p-6 flex flex-col justify-end">
+            <span className="text-[10px] uppercase tracking-widest text-[#D32F2F] font-bold">Physical Facility</span>
+            <h3 className="text-sm font-bold text-white uppercase">{showroomConfig.name} — Podanur Main Rd</h3>
           </div>
         </div>
 
-        {/* Right Column: Story Text */}
-        <div className="lg:col-span-6 space-y-5 text-gray-700 text-xs sm:text-sm leading-relaxed">
-          <h2 className="text-2xl font-black text-gray-900 uppercase border-l-2 border-[#d32f2f] pl-3">
+        {/* Editorial Story Content */}
+        <div className="lg:col-span-6 space-y-6 text-[#666666] text-xs sm:text-sm leading-relaxed">
+          <h2 className="text-2xl font-bold text-[#0A0A0A] uppercase tracking-tight border-l-2 border-[#D32F2F] pl-3">
             TWO-WHEELER SALES & SERVICE IN COIMBATORE
           </h2>
 
           <p>
-            <strong className="text-gray-900">{showroomConfig.name}</strong> is a dedicated two-wheeler sales and service center situated at <span className="text-gray-900 font-semibold">{showroomConfig.address}, {showroomConfig.landmark}, {showroomConfig.area}, Coimbatore</span>.
+            Established at <strong className="text-[#0A0A0A]">{showroomConfig.fullAddress}</strong>, KOVAI MOTOBIKES serves rider requirements across Coimbatore South and Podanur with straightforward multi-brand sales and expert maintenance.
           </p>
 
           <p>
-            We specialize in multi-brand motorcycle and scooter sales, periodic workshop maintenance, genuine spare parts, and computerized diagnostics for riders across Coimbatore South.
+            We eliminate dealership opacity. From transparent pricing on new vehicle inventory to structured workshop estimates and original spare parts, every aspect of our operations is designed to build long-term local trust.
           </p>
-
-          <div className="grid grid-cols-2 gap-4 pt-2 text-xs">
-            <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm space-y-1">
-              <span className="text-[#d32f2f] font-bold uppercase block">Vehicle Sales</span>
-              <p className="text-gray-600 text-[11px]">New motorcycles, scooters, transparent pricing & documentation.</p>
-            </div>
-            <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm space-y-1">
-              <span className="text-[#d32f2f] font-bold uppercase block">Workshop Service</span>
-              <p className="text-gray-600 text-[11px]">Oil changes, brake overhaul, engine tuning & safety checks.</p>
-            </div>
-          </div>
         </div>
 
       </div>
 
-      {/* Showroom Display Image & Service Pillars */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-        
-        <div className="lg:col-span-6 space-y-5 text-gray-700 text-xs sm:text-sm leading-relaxed order-2 lg:order-1">
-          <h2 className="text-2xl font-black text-gray-900 uppercase border-l-2 border-[#d32f2f] pl-3">
-            OUR SERVICE WORKSHOP COMMITMENT
+      {/* Four Dealership Pillars */}
+      <div className="space-y-8 pt-8 border-t border-[#E5E5E5]">
+        <div className="border-b border-[#E5E5E5] pb-4">
+          <span className="text-xs uppercase tracking-[0.2em] font-bold text-[#D32F2F] block mb-1">
+            CORE CAPABILITIES
+          </span>
+          <h2 className="text-2xl font-bold tracking-tight uppercase text-[#0A0A0A]">
+            DEALERSHIP PILLARS
           </h2>
-
-          <p>
-            Our workshop is equipped to handle routine servicing, oil changes, engine tuning, brake replacement, and electrical troubleshooting. We focus on clear explanations, transparent cost estimations, and reliable turnaround times.
-          </p>
-
-          <ul className="space-y-2.5 text-xs text-gray-800 font-medium">
-            <li className="flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-[#d32f2f] shrink-0" />
-              <span>Genuine spare parts and recommended lubricants.</span>
-            </li>
-            <li className="flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-[#d32f2f] shrink-0" />
-              <span>Clear pre-service inspection & cost guidance.</span>
-            </li>
-            <li className="flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-[#d32f2f] shrink-0" />
-              <span>Convenient appointment scheduling online or over phone.</span>
-            </li>
-          </ul>
-
-          <div className="pt-2 flex flex-wrap items-center gap-4">
-            <Link
-              href="/book-service"
-              className="px-6 py-3.5 bg-[#d32f2f] hover:bg-[#b71c1c] text-white font-bold text-xs uppercase rounded-md shadow-sm transition-all min-h-[44px]"
-            >
-              Book Service Slot
-            </Link>
-            <WhatsAppButton variant="button" label="WhatsApp Workshop" />
-          </div>
         </div>
 
-        <div className="lg:col-span-6 relative h-[380px] rounded-2xl overflow-hidden border border-gray-200 shadow-sm bg-white order-1 lg:order-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          
+          <div className="bg-white border border-[#E5E5E5] p-6 space-y-3">
+            <div className="w-6 h-[2px] bg-[#D32F2F]" />
+            <h3 className="text-base font-bold text-[#0A0A0A] uppercase">SALES</h3>
+            <p className="text-xs text-[#666666] leading-relaxed">
+              Multi-brand selection of motorcycles and scooters with transparent pricing and efficient registration support.
+            </p>
+          </div>
+
+          <div className="bg-white border border-[#E5E5E5] p-6 space-y-3">
+            <div className="w-6 h-[2px] bg-[#D32F2F]" />
+            <h3 className="text-base font-bold text-[#0A0A0A] uppercase">SERVICE</h3>
+            <p className="text-xs text-[#666666] leading-relaxed">
+              Certified multi-bay workshop equipped for routine servicing, brake work, engine tuning, and electronic diagnostics.
+            </p>
+          </div>
+
+          <div className="bg-white border border-[#E5E5E5] p-6 space-y-3">
+            <div className="w-6 h-[2px] bg-[#D32F2F]" />
+            <h3 className="text-base font-bold text-[#0A0A0A] uppercase">GENUINE PARTS</h3>
+            <p className="text-xs text-[#666666] leading-relaxed">
+              Exclusive use of OEM spare parts, factory filters, and grade-recommended synthetic lubricants.
+            </p>
+          </div>
+
+          <div className="bg-white border border-[#E5E5E5] p-6 space-y-3">
+            <div className="w-6 h-[2px] bg-[#D32F2F]" />
+            <h3 className="text-base font-bold text-[#0A0A0A] uppercase">CUSTOMER CARE</h3>
+            <p className="text-xs text-[#666666] leading-relaxed">
+              Direct phone support, online booking convenience, and dedicated after-sales assistance.
+            </p>
+          </div>
+
+        </div>
+      </div>
+
+      {/* Showroom Floor Photography & CTAs */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center bg-white border border-[#E5E5E5] p-8 md:p-12">
+        <div className="lg:col-span-6 relative h-72 sm:h-80 border border-[#E5E5E5] bg-[#0A0A0A]">
           <Image
             src="/images/showroom-bikes.jpg"
-            alt="Showroom Bikes Display"
+            alt="Showroom Lineup"
             fill
             className="object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent p-6 flex items-end">
-            <div>
-              <span className="text-[10px] uppercase text-red-400 font-bold block tracking-wider">Showroom Floor</span>
-              <h3 className="text-base font-bold text-white">Two-Wheeler Lineup on Display</h3>
-            </div>
-          </div>
         </div>
 
+        <div className="lg:col-span-6 space-y-6">
+          <span className="text-xs uppercase tracking-[0.2em] font-bold text-[#D32F2F] block">
+            VISIT OUR SHOWROOM
+          </span>
+          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight uppercase text-[#0A0A0A]">
+            EXPLORE IN PERSON
+          </h2>
+          <p className="text-xs sm:text-sm text-[#666666] leading-relaxed">
+            Our showroom on Podanur Main Road is open Monday through Saturday from 9:00 AM to 8:30 PM. Visit us to inspect vehicles or consult our service managers.
+          </p>
+
+          <div className="pt-2 flex flex-wrap items-center gap-4">
+            <Link href="/motorcycles" className="btn-primary">
+              <span>EXPLORE MOTORCYCLES</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+            <WhatsAppButton variant="button" label="WHATSAPP SALES" />
+          </div>
+        </div>
       </div>
 
     </div>

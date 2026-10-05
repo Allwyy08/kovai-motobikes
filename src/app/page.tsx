@@ -8,25 +8,14 @@ import { fetchMotorcycles, createCustomerEnquiry } from '@/lib/data-store';
 import MotorcycleCard from '@/components/common/MotorcycleCard';
 import WhatsAppButton from '@/components/common/WhatsAppButton';
 import { showroomConfig } from '@/config/showroom';
-import { 
-  Bike, 
-  Wrench, 
-  ShieldCheck, 
-  MapPin, 
-  Phone, 
-  Clock, 
-  ChevronRight, 
-  Check,
-  Send,
-  AlertCircle
-} from 'lucide-react';
+import { ArrowRight, Check, AlertCircle, MapPin, Phone, Clock } from 'lucide-react';
 
 export default function HomePage() {
   const [motorcycles, setMotorcycles] = useState<Motorcycle[]>([]);
   const [activeCategory, setActiveCategory] = useState<string>('All');
   const [loading, setLoading] = useState(true);
 
-  // Enquiry form state
+  // Direct Enquiry Form state
   const [enquiryForm, setEnquiryForm] = useState({
     name: '',
     phone: '',
@@ -53,15 +42,15 @@ export default function HomePage() {
 
   const categories = ['All', 'Commuter', 'Scooter', 'Sport', 'Cruiser', 'Naked'];
 
-  const filteredBikes = activeCategory === 'All' 
-    ? motorcycles 
-    : motorcycles.filter(b => b.category === activeCategory);
+  const filteredBikes = activeCategory === 'All'
+    ? motorcycles
+    : motorcycles.filter((b) => b.category === activeCategory);
 
   const handleEnquirySubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setEnquiryError('');
     if (!enquiryForm.name || !enquiryForm.phone || !enquiryForm.message) return;
-    
+
     setEnquiryStatus('submitting');
     try {
       await createCustomerEnquiry({
@@ -80,74 +69,252 @@ export default function HomePage() {
   };
 
   return (
-    <div className="space-y-20 pb-16">
+    <div className="space-y-24 md:space-y-32 pb-24 font-sans bg-[#F6F6F4] text-[#0A0A0A]">
       
       {/* ================= 1. HERO SECTION (REAL SHOWROOM PHOTOGRAPH) ================= */}
-      <section className="relative min-h-[640px] sm:min-h-[700px] lg:min-h-[760px] flex items-center justify-center overflow-hidden -mt-24 pt-28 bg-[#090b0e]">
+      <section className="relative min-h-[100svh] md:min-h-[90vh] flex items-end justify-start overflow-hidden bg-[#0A0A0A] pt-24 pb-16 md:pb-24">
         
-        {/* Full-Width Real Showroom Photo Background */}
+        {/* Real Showroom Exterior Photo - Focused on Sign & Entrance */}
         <div className="absolute inset-0 z-0 overflow-hidden">
           <Image
             src="/images/showroom-exterior.png"
-            alt="KOVAI MOTOBIKES Real Showroom Facade"
+            alt="KOVAI MOTOBIKES Showroom Facade"
             fill
             priority
-            className="object-cover object-[center_top] sm:object-center opacity-85 sm:opacity-90 filter contrast-[1.08] transition-transform duration-1000 ease-out scale-[1.02]"
+            className="object-cover object-[center_15%] md:object-center filter contrast-[1.02] opacity-85"
             sizes="100vw"
           />
           
-          {/* Subtle Directional Gradient Mask for Left Text Legibility without Hiding the Storefront */}
-          <div className="absolute inset-0 bg-gradient-to-r from-[#090b0e]/95 via-[#090b0e]/75 sm:via-[#090b0e]/50 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#090b0e] via-transparent to-[#090b0e]/50" />
+          {/* Restrained cinematic gradient overlays */}
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/40 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#0A0A0A]/90 via-[#0A0A0A]/40 to-transparent" />
         </div>
 
-        {/* Integrated Hero Text Content (No Floating Image Card on Right) */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 py-16 w-full">
-          <div className="max-w-3xl space-y-6 text-left">
+        {/* Hero Structure */}
+        <div className="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
+          <div className="max-w-2xl space-y-4 md:space-y-6">
             
-            {/* Location Tag */}
-            <div className="animate-fade-in-up delay-100 inline-flex items-center gap-2 px-3 py-1 rounded-md bg-[#090b0e]/75 border border-white/15 backdrop-blur-md text-[11px] font-sans text-red-400 font-semibold tracking-wider uppercase shadow-sm">
-              <MapPin className="w-3.5 h-3.5 text-[#d32f2f]" />
-              <span>Coimbatore South · Podanur Main Road</span>
-            </div>
+            {/* Primary Brand Title */}
+            <h1 className="text-[30px] sm:text-[34px] md:text-[52px] lg:text-[58px] font-bold text-white tracking-[-0.025em] leading-[1.02] uppercase font-sans">
+              KOVAI MOTOBIKES
+            </h1>
 
-            {/* Main Primary Hero Heading & Hierarchy */}
-            <div className="animate-fade-in-up delay-200 space-y-3">
-              <h1 className="text-3xl xs:text-5xl sm:text-7xl lg:text-8xl font-black text-white tracking-[-0.03em] sm:tracking-[-0.04em] leading-[0.98] sm:leading-[0.95] uppercase font-sans drop-shadow-lg break-words">
-                KOVAI MOTOBIKES
-              </h1>
-              <h2 className="text-base sm:text-2xl lg:text-3xl font-semibold text-white tracking-tight leading-snug font-sans">
-                All Two-Wheeler <span className="text-[#d32f2f]">Sales & Service</span>
-              </h2>
-            </div>
+            {/* Secondary Supporting Headline */}
+            <h2 className="text-[13px] sm:text-[15px] md:text-[18px] lg:text-[20px] font-semibold text-gray-300 tracking-[0.18em] uppercase leading-snug font-sans pt-1">
+              ALL TWO-WHEELER SALES & SERVICE
+            </h2>
 
-            {/* Concise Supporting Copy */}
-            <p className="animate-fade-in-up delay-300 text-xs sm:text-base text-gray-200 max-w-xl leading-relaxed font-sans drop-shadow">
-              Your trusted destination for motorcycles, scooters and professional two-wheeler service in Coimbatore. Experience transparent sales, genuine parts, and expert maintenance.
+            {/* Short Description */}
+            <p className="text-xs sm:text-base md:text-lg text-gray-300 leading-relaxed font-normal max-w-[340px] md:max-w-[620px]">
+              Your trusted destination for motorcycles, scooters and professional two-wheeler service in Coimbatore.
             </p>
 
-            {/* Integrated Action Buttons */}
-            <div className="animate-fade-in-up delay-400 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-3 font-sans">
-              <Link
-                href="/motorcycles"
-                className="w-full sm:w-auto px-6 py-3.5 bg-[#d32f2f] hover:bg-[#b71c1c] text-white font-bold text-xs uppercase tracking-wider rounded-md shadow-lg transition-all flex items-center justify-center gap-2 min-h-[44px]"
-              >
-                <Bike className="w-4 h-4" />
-                Explore Motorcycles
-              </Link>
+            {/* Action CTAs with Explicit Hierarchy */}
+            <div className="space-y-3 pt-4 w-full">
+              {/* Primary Action (Top Row - Full Width on Mobile) */}
+              <div>
+                <Link
+                  href="/motorcycles"
+                  className="btn-primary w-full md:w-auto md:min-w-[220px] h-[46px] rounded-[6px] flex items-center justify-center gap-2"
+                >
+                  <span>EXPLORE MOTORCYCLES</span>
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
 
-              <Link
-                href="/book-service"
-                className="w-full sm:w-auto px-6 py-3.5 bg-[#090b0e]/80 hover:bg-[#090b0e] text-white font-bold text-xs uppercase tracking-wider border border-white/20 rounded-md backdrop-blur-md transition-all flex items-center justify-center gap-2 min-h-[44px]"
-              >
-                <Wrench className="w-4 h-4 text-red-400" />
-                Book a Service
-              </Link>
+              {/* Secondary Actions (Second Row - Side-by-Side on Mobile) */}
+              <div className="flex items-center gap-2.5 sm:gap-3 w-full md:w-auto">
+                <Link
+                  href="/book-service"
+                  className="flex-1 md:flex-initial h-[42px] px-3 md:px-6 rounded-[6px] border border-white/20 bg-black/40 text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center transition-colors hover:bg-white hover:text-black"
+                >
+                  <span>BOOK A SERVICE</span>
+                </Link>
 
-              <WhatsAppButton 
-                variant="button" 
-                label="WhatsApp Sales" 
-                className="w-full sm:w-auto !px-5 !py-3.5 !text-xs !font-sans uppercase justify-center min-h-[44px]" 
+                <a
+                  href={`https://wa.me/${showroomConfig.whatsapp.replace(/[^0-9]/g, '')}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 md:flex-initial h-[42px] px-3 md:px-6 rounded-[6px] bg-[#0F6F5F] hover:bg-[#0C594C] text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center transition-colors"
+                >
+                  <span>WHATSAPP SALES</span>
+                </a>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* ================= 2. HOMEPAGE SECTION 2: EDITORIAL FEATURING ================= */}
+      <section className="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="pt-8 pb-16 border-b border-[#E5E5E5]">
+          
+          {/* Editorial Split Header */}
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start mb-16">
+            <div className="md:col-span-6">
+              <span className="text-xs uppercase tracking-[0.2em] font-bold text-[#D32F2F] block mb-3">
+                OUR APPROACH
+              </span>
+              <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-[#0A0A0A] uppercase leading-tight">
+                BUILT AROUND<br />YOUR RIDE.
+              </h2>
+            </div>
+            
+            <div className="md:col-span-6 md:pt-8 text-base text-[#666666] leading-relaxed space-y-4">
+              <p>
+                At KOVAI MOTOBIKES, we simplify two-wheeler ownership. Whether you are choosing a brand new commuter motorcycle, a high-performance model, or seeking dependable workshop servicing, our process is built on clarity, genuine parts, and transparent guidance.
+              </p>
+            </div>
+          </div>
+
+          {/* Three Simple Feature Columns */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 pt-8 border-t border-[#E5E5E5]">
+            <div className="space-y-3">
+              <div className="w-8 h-[2px] bg-[#D32F2F]" />
+              <h3 className="text-lg font-bold text-[#0A0A0A] uppercase tracking-wide">
+                MULTI-BRAND SALES
+              </h3>
+              <p className="text-sm text-[#666666] leading-relaxed">
+                Explore a wide spectrum of scooters and motorcycles with clear on-road pricing and prompt registration support.
+              </p>
+              <div>
+                <Link href="/motorcycles" className="link-arrow text-xs pt-1">
+                  <span>VIEW MOTORCYCLES</span>
+                  <ArrowRight className="w-3.5 h-3.5 arrow-icon text-[#D32F2F]" />
+                </Link>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <div className="w-8 h-[2px] bg-[#D32F2F]" />
+              <h3 className="text-lg font-bold text-[#0A0A0A] uppercase tracking-wide">
+                CERTIFIED WORKSHOP
+              </h3>
+              <p className="text-sm text-[#666666] leading-relaxed">
+                Periodic maintenance, engine tuning, brake servicing, and electrical diagnostics performed by experienced technicians.
+              </p>
+              <div>
+                <Link href="/book-service" className="link-arrow text-xs pt-1">
+                  <span>BOOK SERVICE</span>
+                  <ArrowRight className="w-3.5 h-3.5 arrow-icon text-[#D32F2F]" />
+                </Link>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <div className="w-8 h-[2px] bg-[#D32F2F]" />
+              <h3 className="text-lg font-bold text-[#0A0A0A] uppercase tracking-wide">
+                GENUINE PARTS
+              </h3>
+              <p className="text-sm text-[#666666] leading-relaxed">
+                Original spare components and factory-recommended lubricants engineered for vehicle longevity and safety.
+              </p>
+              <div>
+                <Link href="/services" className="link-arrow text-xs pt-1">
+                  <span>EXPLORE SERVICES</span>
+                  <ArrowRight className="w-3.5 h-3.5 arrow-icon text-[#D32F2F]" />
+                </Link>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      {/* ================= 3. MOTORCYCLE SHOWCASE (AUTOMOTIVE CATALOGUE) ================= */}
+      <section className="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8">
+        
+        {/* Section Heading & Category Tabs */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 pb-6 border-b border-[#E5E5E5]">
+          <div>
+            <span className="text-xs uppercase tracking-[0.2em] font-bold text-[#D32F2F] block mb-2">
+              CATALOGUE
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#0A0A0A] uppercase">
+              FIND YOUR NEXT RIDE
+            </h2>
+          </div>
+
+          {/* Understated Category Filters */}
+          <div className="flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar">
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setActiveCategory(cat)}
+                className={`text-xs uppercase tracking-wider font-bold px-4 py-2 transition-colors border ${
+                  activeCategory === cat
+                    ? 'bg-[#0A0A0A] text-white border-[#0A0A0A]'
+                    : 'bg-white text-[#666666] hover:text-[#0A0A0A] border-[#E5E5E5]'
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Product Showcase Grid */}
+        {loading ? (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 animate-pulse">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="h-88 bg-gray-200 border border-gray-300" />
+            ))}
+          </div>
+        ) : filteredBikes.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filteredBikes.slice(0, 6).map((bike) => (
+              <MotorcycleCard key={bike.id} motorcycle={bike} />
+            ))}
+          </div>
+        ) : (
+          <div className="py-16 text-center border border-[#E5E5E5] bg-white p-8">
+            <h3 className="text-sm font-bold text-[#0A0A0A] uppercase">No motorcycles in this category</h3>
+          </div>
+        )}
+
+        <div className="mt-12 text-center">
+          <Link href="/motorcycles" className="link-arrow text-xs">
+            <span>VIEW COMPLETE MOTORCYCLE CATALOGUE ({motorcycles.length})</span>
+            <ArrowRight className="w-4 h-4 arrow-icon text-[#D32F2F]" />
+          </Link>
+        </div>
+
+      </section>
+
+      {/* ================= 4. REAL SHOWROOM & WORKSHOP PRESENTATION ================= */}
+      <section className="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="bg-[#0A0A0A] text-white p-8 md:p-16">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            
+            <div className="lg:col-span-6 space-y-6">
+              <span className="text-xs uppercase tracking-[0.2em] font-bold text-[#D32F2F] block">
+                WORKSHOP & CARE
+              </span>
+              <h2 className="text-3xl sm:text-5xl font-bold tracking-tight uppercase leading-tight">
+                PRECISION SERVICE.<br />PROFESSIONAL CARE.
+              </h2>
+              <p className="text-sm text-gray-300 leading-relaxed max-w-md">
+                Our workshop is outfitted with computerized diagnostic scanners and dedicated service bays. From routine periodic oil changes to comprehensive engine overhauls, your vehicle receives precision care.
+              </p>
+              
+              <div className="pt-4 flex flex-wrap items-center gap-4">
+                <Link href="/book-service" className="btn-primary">
+                  <span>BOOK A SERVICE</span>
+                </Link>
+                <Link href="/services" className="btn-secondary-light">
+                  <span>EXPLORE SERVICES</span>
+                </Link>
+              </div>
+            </div>
+
+            <div className="lg:col-span-6 relative h-72 md:h-96 border border-white/20 overflow-hidden">
+              <Image
+                src="/images/service-workshop.jpg"
+                alt="KOVAI MOTOBIKES Workshop"
+                fill
+                className="object-cover"
+                sizes="(max-width: 1024px) 100vw, 50vw"
               />
             </div>
 
@@ -155,224 +322,108 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ================= 2. QUICK BUSINESS HIGHLIGHTS ================= */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-3 font-sans">
-            <div className="w-10 h-10 rounded-lg bg-red-50 border border-red-200 text-[#d32f2f] flex items-center justify-center">
-              <Bike className="w-5 h-5" />
-            </div>
-            <h3 className="text-base font-bold text-gray-900 uppercase">Multi-Brand Sales</h3>
-            <p className="text-xs text-gray-600 leading-relaxed">
-              Explore motorcycles and scooters with on-road pricing, clear specs, and hassle-free documentation.
-            </p>
-          </div>
-
-          <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-3 font-sans">
-            <div className="w-10 h-10 rounded-lg bg-red-50 border border-red-200 text-[#d32f2f] flex items-center justify-center">
-              <Wrench className="w-5 h-5" />
-            </div>
-            <h3 className="text-base font-bold text-gray-900 uppercase">Certified Workshop</h3>
-            <p className="text-xs text-gray-600 leading-relaxed">
-              Periodic maintenance, oil changes, brake service, engine tuning, and electronic diagnostics.
-            </p>
-          </div>
-
-          <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-3 font-sans">
-            <div className="w-10 h-10 rounded-lg bg-red-50 border border-red-200 text-[#d32f2f] flex items-center justify-center">
-              <ShieldCheck className="w-5 h-5" />
-            </div>
-            <h3 className="text-base font-bold text-gray-900 uppercase">Genuine Components</h3>
-            <p className="text-xs text-gray-600 leading-relaxed">
-              We install original spare parts and factory-recommended lubricants for long-term engine life.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* ================= 3. FEATURED MOTORCYCLES ================= */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 font-sans">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6">
+      {/* ================= 5. REAL CUSTOMER DELIVERY MOMENTS ================= */}
+      <section className="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 mb-8 pb-4 border-b border-[#E5E5E5]">
           <div>
-            <span className="text-xs uppercase tracking-widest text-[#d32f2f] block mb-1 font-bold">
-              Current Inventory
+            <span className="text-xs uppercase tracking-[0.2em] font-bold text-[#D32F2F] block mb-1">
+              PHYSICAL DEALERSHIP
             </span>
-            <h2 className="text-2xl sm:text-3xl font-black text-gray-900 uppercase tracking-tight">
-              FEATURED TWO-WHEELERS
+            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#0A0A0A] uppercase">
+              DELIVERY MOMENTS
             </h2>
           </div>
-          <Link
-            href="/motorcycles"
-            className="text-xs font-bold text-[#d32f2f] hover:text-[#b71c1c] flex items-center gap-1 uppercase"
-          >
-            View Complete Catalogue ({motorcycles.length})
-            <ChevronRight className="w-4 h-4" />
+          <Link href="/gallery" className="link-arrow text-xs">
+            <span>VIEW GALLERY</span>
+            <ArrowRight className="w-3.5 h-3.5 arrow-icon text-[#D32F2F]" />
           </Link>
         </div>
 
-        {/* Category Tabs */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-3 mb-6 no-scrollbar">
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setActiveCategory(cat)}
-              className={`px-4 py-2 rounded-md text-xs font-bold uppercase tracking-wider whitespace-nowrap transition-all ${
-                activeCategory === cat
-                  ? 'bg-[#d32f2f] text-white shadow-sm'
-                  : 'bg-white text-gray-700 hover:text-gray-900 border border-gray-300 hover:bg-gray-50'
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-
-        {/* Motorcycles Grid */}
-        {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-pulse">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="h-88 bg-gray-100 rounded-xl border border-gray-200" />
-            ))}
-          </div>
-        ) : filteredBikes.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredBikes.slice(0, 6).map((bike) => (
-              <MotorcycleCard key={bike.id} motorcycle={bike} />
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-12 bg-white rounded-xl border border-gray-200 p-6">
-            <Bike className="w-10 h-10 text-gray-400 mx-auto mb-2" />
-            <h3 className="text-sm font-bold text-gray-900">No models match this category</h3>
-          </div>
-        )}
-      </section>
-
-      {/* ================= 4. REAL SHOWROOM & DELIVERY MOMENTS ================= */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 font-sans">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <span className="text-xs uppercase tracking-widest text-[#d32f2f] block mb-1 font-bold">
-              Customer Experience
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-black text-gray-900 uppercase tracking-tight">
-              DELIVERY MOMENTS AT KOVAI MOTOBIKES
-            </h2>
-          </div>
-          <Link href="/gallery" className="text-xs font-bold text-[#d32f2f] hover:text-[#b71c1c] flex items-center gap-1 uppercase">
-            View Gallery <ChevronRight className="w-4 h-4" />
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div className="relative h-64 rounded-xl overflow-hidden border border-gray-200 group shadow-sm bg-white">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          <div className="relative h-72 bg-[#0A0A0A] border border-[#E5E5E5] overflow-hidden group">
             <Image
               src="/images/delivery-1.jpg"
-              alt="Suzuki Burgman Delivery at KOVAI MOTOBIKES"
+              alt="Delivery Moment at KOVAI MOTOBIKES"
               fill
               className="object-cover group-hover:scale-105 transition-transform duration-500"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent p-4 flex flex-col justify-end">
-              <span className="text-[10px] uppercase text-red-400 font-bold tracking-wider">Key Handover</span>
-              <h3 className="text-xs font-bold text-white uppercase">Suzuki Burgman Street Delivery</h3>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent p-5 flex flex-col justify-end">
+              <span className="text-[10px] uppercase tracking-widest text-[#D32F2F] font-bold">Key Handover</span>
+              <h3 className="text-xs font-bold text-white uppercase">Burgman Street Handover</h3>
             </div>
           </div>
 
-          <div className="relative h-64 rounded-xl overflow-hidden border border-gray-200 group shadow-sm bg-white">
+          <div className="relative h-72 bg-[#0A0A0A] border border-[#E5E5E5] overflow-hidden group">
             <Image
               src="/images/delivery-2.jpg"
-              alt="Suzuki Avenis Night Delivery"
+              alt="Special Delivery Moment"
               fill
               className="object-cover group-hover:scale-105 transition-transform duration-500"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent p-4 flex flex-col justify-end">
-              <span className="text-[10px] uppercase text-red-400 font-bold tracking-wider">Celebration</span>
-              <h3 className="text-xs font-bold text-white uppercase">Special Delivery Moment</h3>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent p-5 flex flex-col justify-end">
+              <span className="text-[10px] uppercase tracking-widest text-[#D32F2F] font-bold">Showroom Floor</span>
+              <h3 className="text-xs font-bold text-white uppercase">Special Customer Moment</h3>
             </div>
           </div>
 
-          <div className="relative h-64 rounded-xl overflow-hidden border border-gray-200 group shadow-sm bg-white">
+          <div className="relative h-72 bg-[#0A0A0A] border border-[#E5E5E5] overflow-hidden group">
             <Image
               src="/images/delivery-3.jpg"
-              alt="Honda Dio Delivery at KOVAI MOTOBIKES Facade"
+              alt="Honda Dio Handover"
               fill
               className="object-cover group-hover:scale-105 transition-transform duration-500"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent p-4 flex flex-col justify-end">
-              <span className="text-[10px] uppercase text-red-400 font-bold tracking-wider">Showroom Entrance</span>
-              <h3 className="text-xs font-bold text-white uppercase">Honda Dio Handover</h3>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent p-5 flex flex-col justify-end">
+              <span className="text-[10px] uppercase tracking-widest text-[#D32F2F] font-bold">Showroom Facade</span>
+              <h3 className="text-xs font-bold text-white uppercase">Honda Dio Delivery</h3>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ================= 5. SERVICE BOOKING CTA BANNER ================= */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 font-sans">
-        <div className="relative rounded-2xl overflow-hidden bg-gradient-to-r from-red-50 via-white to-gray-50 border border-red-100 p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm">
-          <div className="space-y-2 max-w-xl text-center md:text-left">
-            <span className="px-3 py-1 rounded bg-red-100 text-[#d32f2f] border border-red-200 text-[10px] uppercase tracking-widest inline-block font-bold">
-              Certified Workshop
-            </span>
-            <h2 className="text-xl sm:text-2xl font-black text-gray-900 uppercase leading-tight">
-              NEED SERVICE OR REPAIR FOR YOUR BIKE?
-            </h2>
-            <p className="text-xs text-gray-600 leading-relaxed">
-              Schedule your appointment online. Our mechanics will inspect, service, and prepare your vehicle on time.
-            </p>
-          </div>
-          <Link
-            href="/book-service"
-            className="px-6 py-3.5 bg-[#d32f2f] hover:bg-[#b71c1c] text-white font-bold text-xs uppercase tracking-wider rounded-md shadow-sm transition-all shrink-0 flex items-center gap-2 min-h-[44px]"
-          >
-            <Wrench className="w-4 h-4" />
-            Book Service Slot
-          </Link>
-        </div>
-      </section>
-
-      {/* ================= 6. ENQUIRY & LOCATION SECTION ================= */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 font-sans">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      {/* ================= 6. DIRECT ENQUIRY & LOCATION ================= */}
+      <section className="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 border-t border-[#E5E5E5] pt-16">
           
-          {/* Direct Customer Enquiry Form */}
-          <div className="lg:col-span-7 bg-white border border-gray-200 p-6 sm:p-8 rounded-2xl space-y-5 shadow-sm">
+          {/* Clean Direct Enquiry Form */}
+          <div className="lg:col-span-7 space-y-6">
             <div>
-              <span className="text-xs uppercase tracking-widest text-[#d32f2f] block mb-1 font-bold">
-                Customer Support
+              <span className="text-xs uppercase tracking-[0.2em] font-bold text-[#D32F2F] block mb-2">
+                CONTACT
               </span>
-              <h3 className="text-xl font-bold text-gray-900 uppercase">
-                SEND AN ENQUIRY TO KOVAI MOTOBIKES
+              <h3 className="text-2xl sm:text-3xl font-bold text-[#0A0A0A] uppercase tracking-tight">
+                SEND AN ENQUIRY
               </h3>
-              <p className="text-xs text-gray-600 mt-1">
-                Inquire about motorcycle pricing, upcoming models, or service availability.
+              <p className="text-xs text-[#666666] mt-1">
+                Inquire about vehicle pricing, upcoming models, or workshop services.
               </p>
             </div>
 
             {enquiryStatus === 'success' ? (
-              <div className="p-6 bg-emerald-50 border border-emerald-200 rounded-xl text-center space-y-3">
-                <Check className="w-7 h-7 text-emerald-600 mx-auto" />
-                <h4 className="text-sm font-bold text-gray-900 uppercase">Enquiry Submitted!</h4>
-                <p className="text-xs text-gray-600">
-                  Thank you for contacting KOVAI MOTOBIKES. We will respond promptly.
+              <div className="p-8 bg-emerald-50 border border-emerald-200 text-center space-y-4">
+                <Check className="w-8 h-8 text-emerald-600 mx-auto" />
+                <h4 className="text-sm font-bold text-[#0A0A0A] uppercase">Enquiry Received</h4>
+                <p className="text-xs text-[#666666]">
+                  Thank you for contacting KOVAI MOTOBIKES. We will get back to you promptly.
                 </p>
                 <button
                   onClick={() => setEnquiryStatus('idle')}
-                  className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-xs font-bold uppercase rounded-md text-gray-800 mt-2"
+                  className="btn-secondary !h-9 !px-4"
                 >
-                  Send Another Enquiry
+                  Send Another Message
                 </button>
               </div>
             ) : (
               <form onSubmit={handleEnquirySubmit} className="space-y-4">
                 {enquiryError && (
-                  <div className="p-3.5 bg-red-50 border border-red-200 rounded-md text-red-800 text-xs font-semibold flex items-center gap-2">
-                    <AlertCircle className="w-4 h-4 text-[#d32f2f] shrink-0" />
+                  <div className="p-3.5 bg-red-50 border border-red-200 text-red-800 text-xs font-semibold flex items-center gap-2">
+                    <AlertCircle className="w-4 h-4 text-[#D32F2F] shrink-0" />
                     <span>{enquiryError}</span>
                   </div>
                 )}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-[#0A0A0A] mb-1">
                       Full Name *
                     </label>
                     <input
@@ -381,11 +432,11 @@ export default function HomePage() {
                       value={enquiryForm.name}
                       onChange={(e) => setEnquiryForm({ ...enquiryForm, name: e.target.value })}
                       placeholder="e.g. Ramesh Kumar"
-                      className="w-full bg-white border border-gray-300 rounded-md px-3.5 py-2.5 text-xs text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#d32f2f] focus:ring-1 focus:ring-[#d32f2f]"
+                      className="input-field"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-[#0A0A0A] mb-1">
                       Phone Number *
                     </label>
                     <input
@@ -393,14 +444,14 @@ export default function HomePage() {
                       required
                       value={enquiryForm.phone}
                       onChange={(e) => setEnquiryForm({ ...enquiryForm, phone: e.target.value })}
-                      placeholder="+91 98422 00000"
-                      className="w-full bg-white border border-gray-300 rounded-md px-3.5 py-2.5 text-xs text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#d32f2f] focus:ring-1 focus:ring-[#d32f2f]"
+                      placeholder="+91 98422 12345"
+                      className="input-field"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-[#0A0A0A] mb-1">
                     Message / Enquiry *
                   </label>
                   <textarea
@@ -408,62 +459,60 @@ export default function HomePage() {
                     required
                     value={enquiryForm.message}
                     onChange={(e) => setEnquiryForm({ ...enquiryForm, message: e.target.value })}
-                    placeholder="Ask about model availability, test rides, or service queries..."
-                    className="w-full bg-white border border-gray-300 rounded-md px-3.5 py-2.5 text-xs text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#d32f2f] focus:ring-1 focus:ring-[#d32f2f]"
+                    placeholder="Ask about motorcycle pricing, test ride availability, or service schedules..."
+                    className="input-field"
                   />
                 </div>
 
                 <button
                   type="submit"
                   disabled={enquiryStatus === 'submitting'}
-                  className="w-full py-3.5 bg-[#d32f2f] hover:bg-[#b71c1c] text-white font-bold text-xs uppercase tracking-wider rounded-md transition-all shadow-sm flex items-center justify-center gap-2 min-h-[44px]"
+                  className="btn-primary w-full"
                 >
-                  <Send className="w-4 h-4" />
-                  {enquiryStatus === 'submitting' ? 'Submitting...' : 'Submit Enquiry'}
+                  {enquiryStatus === 'submitting' ? 'SUBMITTING...' : 'SUBMIT ENQUIRY'}
                 </button>
               </form>
             )}
           </div>
 
-          {/* Location & Showroom Address */}
+          {/* Location & Operating Details */}
           <div className="lg:col-span-5 space-y-6">
-            <div className="bg-white border border-gray-200 p-6 rounded-2xl space-y-4 shadow-sm">
-              <h3 className="text-base font-bold text-gray-900 uppercase border-l-2 border-[#d32f2f] pl-3">
-                VISIT KOVAI MOTOBIKES
+            <div className="bg-white border border-[#E5E5E5] p-6 space-y-5">
+              <h3 className="text-base font-bold text-[#0A0A0A] uppercase border-l-2 border-[#D32F2F] pl-3">
+                DEALERSHIP LOCATION
               </h3>
               
-              <div className="space-y-3 text-xs">
+              <div className="space-y-4 text-xs text-[#666666]">
                 <div className="flex items-start gap-3">
-                  <MapPin className="w-4 h-4 text-[#d32f2f] shrink-0 mt-0.5" />
+                  <MapPin className="w-4 h-4 text-[#D32F2F] shrink-0 mt-0.5" />
                   <div className="leading-relaxed">
-                    <span className="text-gray-500 uppercase block text-[10px] font-bold">Showroom Address</span>
-                    <span className="text-gray-900 font-bold">{showroomConfig.name}</span><br />
-                    <span className="text-gray-700">{showroomConfig.address},</span><br />
-                    <span className="text-gray-700">{showroomConfig.landmark},</span><br />
-                    <span className="text-gray-700">{showroomConfig.area}, {showroomConfig.city}, {showroomConfig.state} {showroomConfig.pincode}</span>
+                    <span className="font-bold text-[#0A0A0A] block">{showroomConfig.name}</span>
+                    <p>{showroomConfig.fullAddress}</p>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3 border-t border-gray-100 pt-3">
-                  <Phone className="w-4 h-4 text-[#d32f2f] shrink-0" />
+                <div className="flex items-center gap-3 border-t border-[#E5E5E5] pt-3">
+                  <Phone className="w-4 h-4 text-[#D32F2F] shrink-0" />
                   <div>
-                    <span className="text-gray-500 uppercase block text-[10px] font-bold">Call Direct</span>
-                    <a href={`tel:${showroomConfig.phone}`} className="text-gray-900 font-bold hover:text-[#d32f2f]">{showroomConfig.phone}</a>
+                    <span className="text-[10px] uppercase font-bold text-[#0A0A0A] block">Phone Contact</span>
+                    <a href={`tel:${showroomConfig.phone}`} className="font-mono text-[#0A0A0A] hover:text-[#D32F2F] font-bold">
+                      {showroomConfig.phone}
+                    </a>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3 border-t border-gray-100 pt-3">
-                  <Clock className="w-4 h-4 text-[#d32f2f] shrink-0" />
+                <div className="flex items-center gap-3 border-t border-[#E5E5E5] pt-3">
+                  <Clock className="w-4 h-4 text-[#D32F2F] shrink-0" />
                   <div>
-                    <span className="text-gray-500 uppercase block text-[10px] font-bold">Showroom & Workshop Hours</span>
-                    <span className="text-gray-700">Mon - Sat: 9:00 AM - 8:30 PM | Sun: 9:00 AM - 2:00 PM</span>
+                    <span className="text-[10px] uppercase font-bold text-[#0A0A0A] block">Operating Hours</span>
+                    <p className="text-[#0A0A0A]">Mon - Sat: 9:00 AM - 8:30 PM | Sun: 10:00 AM - 2:00 PM</p>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Google Maps Container */}
-            <div className="h-56 rounded-2xl overflow-hidden border border-gray-200 bg-gray-100 relative shadow-sm">
+            {/* Google Map Container */}
+            <div className="h-60 border border-[#E5E5E5] bg-gray-200 relative">
               <iframe
                 title="KOVAI MOTOBIKES Google Maps Location"
                 src={showroomConfig.googleMapsEmbed}

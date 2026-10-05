@@ -9,6 +9,7 @@ import {
   EnquiryStatus
 } from './types';
 import { supabase, isSupabaseConfigured } from './supabase';
+import { generateUUID } from './uuid';
 
 const INITIAL_MOTORCYCLES: Motorcycle[] = [
   {
@@ -313,7 +314,7 @@ export async function fetchMotorcycleBySlug(slug: string): Promise<Motorcycle | 
 export async function saveMotorcycle(bike: Partial<Motorcycle> & { name: string; price: number; category: any; engine: string; description: string; image_url: string }): Promise<Motorcycle> {
   const slug = bike.slug || bike.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
   const newBike: Motorcycle = {
-    id: bike.id || crypto.randomUUID(),
+    id: bike.id || generateUUID(),
     name: bike.name,
     slug,
     category: bike.category || 'Scooter',
@@ -378,7 +379,7 @@ export async function deleteMotorcycle(id: string): Promise<void> {
 export async function createServiceBooking(data: Omit<ServiceBooking, 'id' | 'created_at' | 'status'>): Promise<ServiceBooking> {
   const newBooking: ServiceBooking = {
     ...data,
-    id: crypto.randomUUID(),
+    id: generateUUID(),
     status: 'NEW',
     created_at: new Date().toISOString()
   };
@@ -432,7 +433,7 @@ export async function updateBookingStatus(id: string, status: BookingStatus): Pr
 export async function createTestRideRequest(data: Omit<TestRideRequest, 'id' | 'created_at' | 'status'>): Promise<TestRideRequest> {
   const newRequest: TestRideRequest = {
     ...data,
-    id: crypto.randomUUID(),
+    id: generateUUID(),
     status: 'NEW',
     created_at: new Date().toISOString()
   };
@@ -486,7 +487,7 @@ export async function updateTestRideStatus(id: string, status: BookingStatus): P
 export async function createCustomerEnquiry(data: Omit<CustomerEnquiry, 'id' | 'created_at' | 'status'>): Promise<CustomerEnquiry> {
   const newEnquiry: CustomerEnquiry = {
     ...data,
-    id: crypto.randomUUID(),
+    id: generateUUID(),
     status: 'NEW',
     created_at: new Date().toISOString()
   };
@@ -550,7 +551,7 @@ export async function fetchGalleryImages(): Promise<GalleryImage[]> {
 export async function createGalleryImage(data: Omit<GalleryImage, 'id' | 'created_at'>): Promise<GalleryImage> {
   const newImage: GalleryImage = {
     ...data,
-    id: crypto.randomUUID(),
+    id: generateUUID(),
     created_at: new Date().toISOString()
   };
 

@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import { showroomConfig } from '@/config/showroom';
 import { createCustomerEnquiry } from '@/lib/data-store';
 import WhatsAppButton from '@/components/common/WhatsAppButton';
-import { MapPin, Phone, Mail, Clock, Check, AlertCircle, Send, Copy } from 'lucide-react';
+import { Check, AlertCircle, Copy } from 'lucide-react';
 
 function ContactContent() {
   const searchParams = useSearchParams();
@@ -48,7 +48,7 @@ function ContactContent() {
       return;
     }
     if (!formData.message.trim()) {
-      setErrorMessage('Please enter your enquiry message.');
+      setErrorMessage('Please enter your message.');
       return;
     }
 
@@ -66,209 +66,86 @@ function ContactContent() {
       setFormData({ name: '', phone: '', email: '', subject: 'General Inquiry', message: '' });
     } catch (err: any) {
       setStatus('error');
-      setErrorMessage(err.message || 'Failed to submit enquiry. Please try again.');
+      setErrorMessage(err.message || 'Failed to submit enquiry.');
     }
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12 font-sans">
+    <div className="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 space-y-16 font-sans bg-[#F6F6F4] text-[#0A0A0A]">
       
       {/* Header */}
-      <div className="border-b border-gray-200 pb-8 space-y-3">
-        <span className="text-xs uppercase tracking-widest text-[#d32f2f] block font-bold">
-          Location & Contact
+      <div className="border-b border-[#E5E5E5] pb-8 space-y-3">
+        <span className="text-xs uppercase tracking-[0.2em] font-bold text-[#D32F2F] block">
+          LOCATION & CONTACT
         </span>
-        <h1 className="text-3xl sm:text-5xl font-black text-gray-900 tracking-tight uppercase">
+        <h1 className="text-3xl sm:text-5xl font-bold tracking-tight text-[#0A0A0A] uppercase">
           VISIT KOVAI MOTOBIKES
         </h1>
-        <p className="text-gray-600 text-sm max-w-2xl leading-relaxed">
-          Visit our two-wheeler sales & service center in Podanur Main Road, Coimbatore South, or send us a message online.
+        <p className="text-[#666666] text-sm max-w-xl leading-relaxed">
+          Visit our dealership on Podanur Main Road, Coimbatore, or send us an enquiry online.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
         
-        {/* Left Column: Online Enquiry Form */}
-        <div className="lg:col-span-7 bg-white border border-gray-200 p-6 sm:p-8 rounded-2xl space-y-6 shadow-sm">
-          <div>
-            <span className="text-xs uppercase tracking-widest text-[#d32f2f] block mb-1 font-bold">
-              Direct Enquiry
-            </span>
-            <h2 className="text-xl font-bold text-gray-900 uppercase">
-              SEND A SHOWROOM INQUIRY
-            </h2>
-            <p className="text-xs text-gray-600 mt-1">
-              Our sales and service team will respond to your phone or message promptly.
-            </p>
-          </div>
-
-          {errorMessage && (
-            <div className="p-4 bg-red-50 border border-red-200 rounded-md text-red-800 text-xs font-semibold flex items-center gap-2">
-              <AlertCircle className="w-5 h-5 text-[#d32f2f] shrink-0" />
-              <span>{errorMessage}</span>
-            </div>
-          )}
-
-          {status === 'success' ? (
-            <div className="p-8 bg-emerald-50 border border-emerald-200 rounded-xl text-center space-y-4 animate-in fade-in duration-300">
-              <Check className="w-8 h-8 text-emerald-600 mx-auto" />
-              <h3 className="text-lg font-bold text-gray-900 uppercase">ENQUIRY SUBMITTED!</h3>
-              <p className="text-xs text-gray-600">
-                Thank you for reaching out to KOVAI MOTOBIKES. We will get back to you shortly.
-              </p>
-              <button
-                onClick={() => setStatus('idle')}
-                className="px-5 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-800 text-xs font-bold uppercase rounded-md border border-gray-300"
-              >
-                Send Another Message
-              </button>
-            </div>
-          ) : (
-            <form onSubmit={handleSubmit} className="space-y-4 text-left">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
-                    Full Name *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    placeholder="e.g. Ramesh Kumar"
-                    className="w-full bg-white border border-gray-300 rounded-md px-4 py-3 text-xs text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#d32f2f] focus:ring-1 focus:ring-[#d32f2f]"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
-                    Phone Number *
-                  </label>
-                  <input
-                    type="tel"
-                    required
-                    value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    placeholder="+91 98422 12345"
-                    className="w-full bg-white border border-gray-300 rounded-md px-4 py-3 text-xs text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#d32f2f] focus:ring-1 focus:ring-[#d32f2f]"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
-                    Email Address
-                  </label>
-                  <input
-                    type="email"
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    placeholder="ramesh@example.com"
-                    className="w-full bg-white border border-gray-300 rounded-md px-4 py-3 text-xs text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#d32f2f] focus:ring-1 focus:ring-[#d32f2f]"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
-                    Inquiry Subject
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.subject}
-                    onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                    placeholder="e.g. Vehicle Price / Service Booking"
-                    className="w-full bg-white border border-gray-300 rounded-md px-4 py-3 text-xs text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#d32f2f] focus:ring-1 focus:ring-[#d32f2f]"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
-                  Message *
-                </label>
-                <textarea
-                  rows={4}
-                  required
-                  value={formData.message}
-                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                  placeholder="How can KOVAI MOTOBIKES assist you today?..."
-                  className="w-full bg-white border border-gray-300 rounded-md px-4 py-3 text-xs text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#d32f2f] focus:ring-1 focus:ring-[#d32f2f]"
-                />
-              </div>
-
-              <button
-                type="submit"
-                disabled={status === 'submitting'}
-                className="w-full py-3.5 bg-[#d32f2f] hover:bg-[#b71c1c] text-white font-bold text-xs uppercase tracking-wider rounded-md transition-all shadow-sm flex items-center justify-center gap-2 min-h-[44px]"
-              >
-                <Send className="w-4 h-4" />
-                {status === 'submitting' ? 'Submitting...' : 'Submit Customer Enquiry'}
-              </button>
-            </form>
-          )}
-
-        </div>
-
-        {/* Right Column: Address Details & Google Maps */}
-        <div className="lg:col-span-5 space-y-6">
+        {/* Left Column: Dealership Information */}
+        <div className="lg:col-span-5 space-y-8">
           
-          <div className="bg-white border border-gray-200 p-6 rounded-2xl space-y-5 shadow-sm">
-            <h2 className="text-base font-bold text-gray-900 uppercase border-l-2 border-[#d32f2f] pl-3">
-              SHOWROOM DETAILS
-            </h2>
+          <div className="bg-white border border-[#E5E5E5] p-8 space-y-6">
+            <div>
+              <span className="text-xs uppercase tracking-widest text-[#D32F2F] font-bold block mb-1">
+                DEALERSHIP
+              </span>
+              <h2 className="text-2xl font-bold text-[#0A0A0A] uppercase tracking-tight">
+                {showroomConfig.name}
+              </h2>
+            </div>
 
-            <div className="space-y-4 text-xs">
-              <div className="flex items-start gap-3">
-                <MapPin className="w-5 h-5 text-[#d32f2f] shrink-0 mt-0.5" />
-                <div className="space-y-1">
-                  <span className="text-gray-500 uppercase text-[10px] block font-bold">Showroom Address</span>
-                  <span className="text-gray-900 font-bold block">{showroomConfig.name}</span>
-                  <p className="text-gray-700 leading-relaxed text-xs">
-                    {showroomConfig.address},<br />
-                    {showroomConfig.landmark},<br />
-                    {showroomConfig.area}, {showroomConfig.city},<br />
-                    {showroomConfig.state} {showroomConfig.pincode}
-                  </p>
-
-                  <button
-                    onClick={handleCopyAddress}
-                    className="mt-2 px-3 py-1 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded border border-gray-300 flex items-center gap-1 text-[10px] font-bold"
-                  >
-                    <Copy className="w-3 h-3 text-[#d32f2f]" />
-                    {copied ? 'Address Copied!' : 'Copy Full Address'}
-                  </button>
-                </div>
+            <div className="space-y-4 text-xs text-[#666666] leading-relaxed">
+              <div>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#0A0A0A] block">Address</span>
+                <p className="text-[#0A0A0A] font-medium pt-0.5">{showroomConfig.fullAddress}</p>
+                <button
+                  onClick={handleCopyAddress}
+                  className="mt-2 text-[10px] uppercase font-bold text-[#D32F2F] hover:underline flex items-center gap-1"
+                >
+                  <Copy className="w-3 h-3" />
+                  {copied ? 'Address Copied' : 'Copy Address'}
+                </button>
               </div>
 
-              <div className="flex items-center gap-3 border-t border-gray-100 pt-3">
-                <Phone className="w-4 h-4 text-[#d32f2f] shrink-0" />
-                <div>
-                  <span className="text-gray-500 uppercase text-[10px] block font-bold">Phone Contact</span>
-                  <a href={`tel:${showroomConfig.phone}`} className="text-gray-900 font-bold hover:text-[#d32f2f]">{showroomConfig.phone}</a>
-                </div>
+              <div className="border-t border-[#E5E5E5] pt-4">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#0A0A0A] block">Phone Contact</span>
+                <a href={`tel:${showroomConfig.phone}`} className="text-[#0A0A0A] font-mono font-bold text-sm hover:text-[#D32F2F]">
+                  {showroomConfig.phone}
+                </a>
               </div>
 
-              <div className="flex items-center gap-3 border-t border-gray-100 pt-3">
-                <Clock className="w-4 h-4 text-[#d32f2f] shrink-0" />
-                <div>
-                  <span className="text-gray-500 uppercase text-[10px] block font-bold">Operating Hours</span>
-                  <span className="text-gray-700">Mon - Sat: 9:00 AM - 8:30 PM | Sun: 9:00 AM - 2:00 PM</span>
-                </div>
+              <div className="border-t border-[#E5E5E5] pt-4">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#0A0A0A] block">Operating Hours</span>
+                <p className="text-[#0A0A0A] font-medium pt-0.5">
+                  Monday - Saturday: 9:00 AM - 8:30 PM<br />
+                  Sunday: 10:00 AM - 2:00 PM
+                </p>
               </div>
             </div>
 
             <div className="pt-2">
               <WhatsAppButton
                 variant="button"
-                label="Direct WhatsApp Support"
-                className="w-full justify-center !py-3 !text-xs"
+                label="WHATSAPP SUPPORT"
+                className="w-full"
               />
             </div>
           </div>
 
-          {/* Embedded Map */}
-          <div className="h-64 rounded-2xl overflow-hidden border border-gray-200 bg-gray-100 relative shadow-sm">
+        </div>
+
+        {/* Right Column: Google Maps & Enquiry Form */}
+        <div className="lg:col-span-7 space-y-8">
+          
+          {/* Map Embed */}
+          <div className="h-64 border border-[#E5E5E5] bg-gray-200 relative">
             <iframe
               title="KOVAI MOTOBIKES Google Maps Location"
               src={showroomConfig.googleMapsEmbed}
@@ -282,6 +159,121 @@ function ContactContent() {
             />
           </div>
 
+          {/* Form */}
+          <div className="bg-white border border-[#E5E5E5] p-8 space-y-6">
+            <div>
+              <span className="text-xs uppercase tracking-widest text-[#D32F2F] font-bold block mb-1">
+                ONLINE INQUIRY
+              </span>
+              <h3 className="text-xl font-bold text-[#0A0A0A] uppercase">
+                SEND A MESSAGE
+              </h3>
+            </div>
+
+            {errorMessage && (
+              <div className="p-3.5 bg-red-50 border border-red-200 text-red-800 text-xs font-semibold flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 text-[#D32F2F] shrink-0" />
+                <span>{errorMessage}</span>
+              </div>
+            )}
+
+            {status === 'success' ? (
+              <div className="p-8 bg-emerald-50 border border-emerald-200 text-center space-y-3">
+                <Check className="w-6 h-6 text-emerald-600 mx-auto" />
+                <h4 className="text-sm font-bold text-[#0A0A0A] uppercase">Enquiry Submitted</h4>
+                <button
+                  onClick={() => setStatus('idle')}
+                  className="btn-secondary !h-9 !px-4"
+                >
+                  Send Another Message
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-4 text-xs">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-[#0A0A0A] font-bold uppercase mb-1">
+                      Full Name *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      placeholder="e.g. Ramesh Kumar"
+                      className="input-field"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[#0A0A0A] font-bold uppercase mb-1">
+                      Phone Number *
+                    </label>
+                    <input
+                      type="tel"
+                      required
+                      value={formData.phone}
+                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                      placeholder="+91 98422 12345"
+                      className="input-field"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-[#0A0A0A] font-bold uppercase mb-1">
+                      Email Address
+                    </label>
+                    <input
+                      type="email"
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      placeholder="ramesh@example.com"
+                      className="input-field"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[#0A0A0A] font-bold uppercase mb-1">
+                      Subject
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.subject}
+                      onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+                      placeholder="e.g. Pricing / Service Query"
+                      className="input-field"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-[#0A0A0A] font-bold uppercase mb-1">
+                    Message *
+                  </label>
+                  <textarea
+                    rows={4}
+                    required
+                    value={formData.message}
+                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                    placeholder="How can we assist you today?..."
+                    className="input-field"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={status === 'submitting'}
+                  className="btn-primary w-full"
+                >
+                  {status === 'submitting' ? 'SUBMITTING...' : 'SUBMIT ENQUIRY'}
+                </button>
+              </form>
+            )}
+
+          </div>
+
         </div>
 
       </div>
@@ -292,7 +284,7 @@ function ContactContent() {
 
 export default function ContactPage() {
   return (
-    <Suspense fallback={<div className="max-w-4xl mx-auto py-20 text-center font-mono text-gray-400">Loading contact details...</div>}>
+    <Suspense fallback={<div className="max-w-4xl mx-auto py-24 text-center font-mono text-gray-400">Loading contact page...</div>}>
       <ContactContent />
     </Suspense>
   );
