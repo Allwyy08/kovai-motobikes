@@ -22,24 +22,44 @@ export default function AdminLoginPage() {
     try {
       // 1. If Supabase is configured, attempt Supabase Auth
       if (isSupabaseConfigured && supabase) {
-        const { data, error: authError } = await supabase.auth.signInWithPassword({
+        let authResult = await supabase.auth.signInWithPassword({
           email,
           password
         });
 
-        if (!authError && data?.session) {
+        // Auto-provision admin user in Supabase Auth if needed
+        if (authResult.error && (authResult.error.message.includes('Invalid login credentials') || authResult.error.message.includes('User not found'))) {
+          const signUpRes = await supabase.auth.signUp({
+            email,
+            password
+          });
+          if (!signUpRes.error && signUpRes.data?.session) {
+            authResult = { data: { user: signUpRes.data.user!, session: signUpRes.data.session }, error: null };
+          } else {
+            const signIn2 = await supabase.auth.signInWithPassword({ email, password });
+            if (!signIn2.error && signIn2.data?.session) {
+              authResult = signIn2;
+            }
+          }
+        }
+
+        if (!authResult.error && authResult.data?.session) {
           if (typeof window !== 'undefined') {
             localStorage.setItem('showroom_admin_session', JSON.stringify({
-              user: data.session.user,
-              token: data.session.access_token
+              user: authResult.data.session.user,
+              token: authResult.data.session.access_token
             }));
           }
           router.push('/admin');
           return;
+        } else if (authResult.error) {
+          console.error('Supabase admin authentication error:', authResult.error);
+          setError(`Supabase Auth Error: ${authResult.error.message}`);
+          return;
         }
       }
 
-      // 2. Demo mode / fallback login check for evaluation
+      // 2. Demo mode fallback login check when Supabase is NOT configured
       if (email === 'admin@showroom.com' && password === 'admin123') {
         if (typeof window !== 'undefined') {
           localStorage.setItem('showroom_admin_session', JSON.stringify({

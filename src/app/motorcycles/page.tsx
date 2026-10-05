@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { Motorcycle, MotorcycleCategory } from '@/lib/types';
 import { fetchMotorcycles, createCustomerEnquiry } from '@/lib/data-store';
 import MotorcycleCard from '@/components/common/MotorcycleCard';
-import { Search, Filter, SlidersHorizontal, Bike, X, Check } from 'lucide-react';
+import { Search, Filter, SlidersHorizontal, Bike, X, Check, AlertCircle } from 'lucide-react';
 
 export default function MotorcyclesPage() {
   const [motorcycles, setMotorcycles] = useState<Motorcycle[]>([]);
@@ -19,7 +19,8 @@ export default function MotorcyclesPage() {
   // Quick Enquiry Modal state
   const [enquiryModalBike, setEnquiryModalBike] = useState<Motorcycle | null>(null);
   const [modalForm, setModalForm] = useState({ name: '', phone: '', email: '', message: '' });
-  const [modalStatus, setModalStatus] = useState<'idle' | 'submitting' | 'success'>('idle');
+  const [modalStatus, setModalStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
+  const [modalError, setModalError] = useState<string>('');
 
   useEffect(() => {
     async function load() {
@@ -72,6 +73,7 @@ export default function MotorcyclesPage() {
 
   const handleModalSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setModalError('');
     if (!enquiryModalBike || !modalForm.name || !modalForm.phone) return;
 
     setModalStatus('submitting');
@@ -89,8 +91,9 @@ export default function MotorcyclesPage() {
         setModalStatus('idle');
         setModalForm({ name: '', phone: '', email: '', message: '' });
       }, 2500);
-    } catch (e) {
-      setModalStatus('idle');
+    } catch (e: any) {
+      setModalStatus('error');
+      setModalError(e.message || 'Failed to submit enquiry. Please try again.');
     }
   };
 
@@ -256,6 +259,12 @@ export default function MotorcyclesPage() {
               </div>
             ) : (
               <form onSubmit={handleModalSubmit} className="space-y-4 text-left">
+                {modalError && (
+                  <div className="p-3 bg-red-50 border border-red-200 rounded-md text-red-800 text-xs font-semibold flex items-center gap-2">
+                    <AlertCircle className="w-4 h-4 text-[#d32f2f] shrink-0" />
+                    <span>{modalError}</span>
+                  </div>
+                )}
                 <div>
                   <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Your Name *</label>
                   <input

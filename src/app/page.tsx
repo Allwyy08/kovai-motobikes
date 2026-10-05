@@ -17,7 +17,8 @@ import {
   Clock, 
   ChevronRight, 
   Check,
-  Send
+  Send,
+  AlertCircle
 } from 'lucide-react';
 
 export default function HomePage() {
@@ -34,6 +35,7 @@ export default function HomePage() {
     message: ''
   });
   const [enquiryStatus, setEnquiryStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
+  const [enquiryError, setEnquiryError] = useState<string>('');
 
   useEffect(() => {
     async function loadData() {
@@ -57,6 +59,7 @@ export default function HomePage() {
 
   const handleEnquirySubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setEnquiryError('');
     if (!enquiryForm.name || !enquiryForm.phone || !enquiryForm.message) return;
     
     setEnquiryStatus('submitting');
@@ -70,8 +73,9 @@ export default function HomePage() {
       });
       setEnquiryStatus('success');
       setEnquiryForm({ name: '', phone: '', email: '', subject: 'General Showroom Inquiry', message: '' });
-    } catch (err) {
+    } catch (err: any) {
       setEnquiryStatus('error');
+      setEnquiryError(err.message || 'Failed to submit enquiry. Please try again.');
     }
   };
 
@@ -360,6 +364,12 @@ export default function HomePage() {
               </div>
             ) : (
               <form onSubmit={handleEnquirySubmit} className="space-y-4">
+                {enquiryError && (
+                  <div className="p-3.5 bg-red-50 border border-red-200 rounded-md text-red-800 text-xs font-semibold flex items-center gap-2">
+                    <AlertCircle className="w-4 h-4 text-[#d32f2f] shrink-0" />
+                    <span>{enquiryError}</span>
+                  </div>
+                )}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">

@@ -20,7 +20,8 @@ import {
   Flame,
   Check,
   X,
-  Palette
+  Palette,
+  AlertCircle
 } from 'lucide-react';
 
 export default function MotorcycleDetailsPage() {
@@ -35,7 +36,8 @@ export default function MotorcycleDetailsPage() {
   // Enquiry modal state
   const [showEnquiryModal, setShowEnquiryModal] = useState(false);
   const [form, setForm] = useState({ name: '', phone: '', email: '', message: '' });
-  const [formStatus, setFormStatus] = useState<'idle' | 'submitting' | 'success'>('idle');
+  const [formStatus, setFormStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
+  const [formError, setFormError] = useState<string>('');
 
   useEffect(() => {
     async function load() {
@@ -82,6 +84,7 @@ export default function MotorcycleDetailsPage() {
 
   const handleEnquirySubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setFormError('');
     if (!form.name || !form.phone) return;
 
     setFormStatus('submitting');
@@ -98,8 +101,9 @@ export default function MotorcycleDetailsPage() {
         setShowEnquiryModal(false);
         setFormStatus('idle');
       }, 2000);
-    } catch (e) {
-      setFormStatus('idle');
+    } catch (e: any) {
+      setFormStatus('error');
+      setFormError(e.message || 'Failed to submit enquiry. Please try again.');
     }
   };
 
@@ -326,6 +330,12 @@ export default function MotorcycleDetailsPage() {
               </div>
             ) : (
               <form onSubmit={handleEnquirySubmit} className="space-y-4 text-left">
+                {formError && (
+                  <div className="p-3 bg-red-50 border border-red-200 rounded-md text-red-800 text-xs font-semibold flex items-center gap-2">
+                    <AlertCircle className="w-4 h-4 text-[#d32f2f] shrink-0" />
+                    <span>{formError}</span>
+                  </div>
+                )}
                 <div>
                   <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Full Name *</label>
                   <input

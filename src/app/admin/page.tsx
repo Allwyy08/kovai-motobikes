@@ -28,6 +28,7 @@ import {
   deleteGalleryImage,
   getDashboardStats
 } from '@/lib/data-store';
+import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 import { 
   ShieldCheck, 
   Bike, 
@@ -44,7 +45,8 @@ import {
   Search,
   Filter,
   Eye,
-  RefreshCw
+  RefreshCw,
+  AlertCircle
 } from 'lucide-react';
 
 export default function AdminDashboardPage() {
@@ -75,22 +77,37 @@ export default function AdminDashboardPage() {
   });
 
   const [selectedEnquiry, setSelectedEnquiry] = useState<CustomerEnquiry | null>(null);
+  const [fetchError, setFetchError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Verify admin login session
-    if (typeof window !== 'undefined') {
-      const session = localStorage.getItem('showroom_admin_session');
-      if (!session) {
+    async function initDashboard() {
+      if (typeof window === 'undefined') return;
+
+      const localSession = localStorage.getItem('showroom_admin_session');
+      if (!localSession) {
         router.push('/admin/login');
         return;
       }
+
+      if (isSupabaseConfigured && supabase) {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+          console.warn('No active Supabase Auth session found. Redirecting to admin login.');
+          localStorage.removeItem('showroom_admin_session');
+          router.push('/admin/login');
+          return;
+        }
+      }
+
       setIsAuthenticated(true);
       loadAllData();
     }
+    initDashboard();
   }, [router]);
 
   const loadAllData = async () => {
     setLoading(true);
+    setFetchError(null);
     try {
       const [st, mList, bList, tList, eList, gList] = await Promise.all([
         getDashboardStats(),
@@ -106,16 +123,20 @@ export default function AdminDashboardPage() {
       setTestRides(tList);
       setEnquiries(eList);
       setGallery(gList);
-    } catch (e) {
-      console.error('Failed loading admin data', e);
+    } catch (e: any) {
+      console.error('Failed loading admin data from Supabase:', e);
+      setFetchError(e.message || 'Failed to load records from Supabase database.');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     if (typeof window !== 'undefined') {
       localStorage.removeItem('showroom_admin_session');
+    }
+    if (isSupabaseConfigured && supabase) {
+      await supabase.auth.signOut();
     }
     router.push('/admin/login');
   };
@@ -217,6 +238,17 @@ export default function AdminDashboardPage() {
           </button>
         </div>
       </div>
+
+      {/* Supabase Fetch Error Alert */}
+      {fetchError && (
+        <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-800 text-xs font-semibold flex items-center gap-3 shadow-sm">
+          <AlertCircle className="w-5 h-5 text-[#d32f2f] shrink-0" />
+          <div>
+            <span className="font-bold block uppercase tracking-wider text-[11px] text-[#d32f2f]">Supabase Database Error</span>
+            <span>{fetchError}</span>
+          </div>
+        </div>
+      )}
 
       {/* Overview Stat Cards */}
       {stats && (

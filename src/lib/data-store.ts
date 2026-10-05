@@ -313,7 +313,7 @@ export async function fetchMotorcycleBySlug(slug: string): Promise<Motorcycle | 
 export async function saveMotorcycle(bike: Partial<Motorcycle> & { name: string; price: number; category: any; engine: string; description: string; image_url: string }): Promise<Motorcycle> {
   const slug = bike.slug || bike.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
   const newBike: Motorcycle = {
-    id: bike.id || `m_${Date.now()}`,
+    id: bike.id || crypto.randomUUID(),
     name: bike.name,
     slug,
     category: bike.category || 'Scooter',
@@ -378,39 +378,50 @@ export async function deleteMotorcycle(id: string): Promise<void> {
 export async function createServiceBooking(data: Omit<ServiceBooking, 'id' | 'created_at' | 'status'>): Promise<ServiceBooking> {
   const newBooking: ServiceBooking = {
     ...data,
-    id: `sb-${Date.now()}`,
+    id: crypto.randomUUID(),
     status: 'NEW',
     created_at: new Date().toISOString()
   };
 
-  if (isSupabaseConfigured && supabase) {
-    try {
-      const { data: res } = await supabase.from('service_bookings').insert([newBooking]).select().single();
-      if (res) return res as ServiceBooking;
-    } catch (e) {}
+  if (!isSupabaseConfigured || !supabase) {
+    throw new Error('Service booking system is not configured.');
   }
 
-  const current = getLocal<ServiceBooking[]>('service_bookings', INITIAL_BOOKINGS);
-  const updated = [newBooking, ...current];
-  setLocal('service_bookings', updated);
+  const { error } = await supabase
+    .from('service_bookings')
+    .insert([newBooking]);
+
+  if (error) {
+    console.error('Supabase service booking insert failed:', error);
+    throw new Error(`Unable to submit booking: ${error.message}`);
+  }
+
   return newBooking;
 }
 
 export async function fetchServiceBookings(): Promise<ServiceBooking[]> {
   if (isSupabaseConfigured && supabase) {
-    try {
-      const { data } = await supabase.from('service_bookings').select('*').order('created_at', { ascending: false });
-      if (data) return data as ServiceBooking[];
-    } catch (e) {}
+    const { data, error } = await supabase
+      .from('service_bookings')
+      .select('*')
+      .order('created_at', { ascending: false });
+      
+    if (error) {
+      console.error('Supabase fetchServiceBookings error:', error);
+      throw new Error(`Unable to fetch service bookings from Supabase: ${error.message} (${error.code || 'RLS_ERROR'})`);
+    }
+    return (data || []) as ServiceBooking[];
   }
   return getLocal<ServiceBooking[]>('service_bookings', INITIAL_BOOKINGS);
 }
 
 export async function updateBookingStatus(id: string, status: BookingStatus): Promise<void> {
   if (isSupabaseConfigured && supabase) {
-    try {
-      await supabase.from('service_bookings').update({ status }).eq('id', id);
-    } catch (e) {}
+    const { error } = await supabase.from('service_bookings').update({ status }).eq('id', id);
+    if (error) {
+      console.error('Supabase updateBookingStatus error:', error);
+      throw new Error(`Unable to update booking status: ${error.message}`);
+    }
   }
   const current = getLocal<ServiceBooking[]>('service_bookings', INITIAL_BOOKINGS);
   const updated = current.map(b => b.id === id ? { ...b, status } : b);
@@ -421,39 +432,50 @@ export async function updateBookingStatus(id: string, status: BookingStatus): Pr
 export async function createTestRideRequest(data: Omit<TestRideRequest, 'id' | 'created_at' | 'status'>): Promise<TestRideRequest> {
   const newRequest: TestRideRequest = {
     ...data,
-    id: `tr-${Date.now()}`,
+    id: crypto.randomUUID(),
     status: 'NEW',
     created_at: new Date().toISOString()
   };
 
-  if (isSupabaseConfigured && supabase) {
-    try {
-      const { data: res } = await supabase.from('test_ride_requests').insert([newRequest]).select().single();
-      if (res) return res as TestRideRequest;
-    } catch (e) {}
+  if (!isSupabaseConfigured || !supabase) {
+    throw new Error('Test ride request system is not configured.');
   }
 
-  const current = getLocal<TestRideRequest[]>('test_ride_requests', INITIAL_TEST_RIDES);
-  const updated = [newRequest, ...current];
-  setLocal('test_ride_requests', updated);
+  const { error } = await supabase
+    .from('test_ride_requests')
+    .insert([newRequest]);
+
+  if (error) {
+    console.error('Supabase test ride request insert failed:', error);
+    throw new Error(`Unable to submit test ride request: ${error.message}`);
+  }
+
   return newRequest;
 }
 
 export async function fetchTestRideRequests(): Promise<TestRideRequest[]> {
   if (isSupabaseConfigured && supabase) {
-    try {
-      const { data } = await supabase.from('test_ride_requests').select('*').order('created_at', { ascending: false });
-      if (data) return data as TestRideRequest[];
-    } catch (e) {}
+    const { data, error } = await supabase
+      .from('test_ride_requests')
+      .select('*')
+      .order('created_at', { ascending: false });
+      
+    if (error) {
+      console.error('Supabase fetchTestRideRequests error:', error);
+      throw new Error(`Unable to fetch test ride requests from Supabase: ${error.message} (${error.code || 'RLS_ERROR'})`);
+    }
+    return (data || []) as TestRideRequest[];
   }
   return getLocal<TestRideRequest[]>('test_ride_requests', INITIAL_TEST_RIDES);
 }
 
 export async function updateTestRideStatus(id: string, status: BookingStatus): Promise<void> {
   if (isSupabaseConfigured && supabase) {
-    try {
-      await supabase.from('test_ride_requests').update({ status }).eq('id', id);
-    } catch (e) {}
+    const { error } = await supabase.from('test_ride_requests').update({ status }).eq('id', id);
+    if (error) {
+      console.error('Supabase updateTestRideStatus error:', error);
+      throw new Error(`Unable to update test ride status: ${error.message}`);
+    }
   }
   const current = getLocal<TestRideRequest[]>('test_ride_requests', INITIAL_TEST_RIDES);
   const updated = current.map(t => t.id === id ? { ...t, status } : t);
@@ -464,39 +486,50 @@ export async function updateTestRideStatus(id: string, status: BookingStatus): P
 export async function createCustomerEnquiry(data: Omit<CustomerEnquiry, 'id' | 'created_at' | 'status'>): Promise<CustomerEnquiry> {
   const newEnquiry: CustomerEnquiry = {
     ...data,
-    id: `eq-${Date.now()}`,
+    id: crypto.randomUUID(),
     status: 'NEW',
     created_at: new Date().toISOString()
   };
 
-  if (isSupabaseConfigured && supabase) {
-    try {
-      const { data: res } = await supabase.from('customer_enquiries').insert([newEnquiry]).select().single();
-      if (res) return res as CustomerEnquiry;
-    } catch (e) {}
+  if (!isSupabaseConfigured || !supabase) {
+    throw new Error('Customer enquiry system is not configured.');
   }
 
-  const current = getLocal<CustomerEnquiry[]>('customer_enquiries', INITIAL_ENQUIRIES);
-  const updated = [newEnquiry, ...current];
-  setLocal('customer_enquiries', updated);
+  const { error } = await supabase
+    .from('customer_enquiries')
+    .insert([newEnquiry]);
+
+  if (error) {
+    console.error('Supabase customer enquiry insert failed:', error);
+    throw new Error(`Unable to submit enquiry: ${error.message}`);
+  }
+
   return newEnquiry;
 }
 
 export async function fetchCustomerEnquiries(): Promise<CustomerEnquiry[]> {
   if (isSupabaseConfigured && supabase) {
-    try {
-      const { data } = await supabase.from('customer_enquiries').select('*').order('created_at', { ascending: false });
-      if (data) return data as CustomerEnquiry[];
-    } catch (e) {}
+    const { data, error } = await supabase
+      .from('customer_enquiries')
+      .select('*')
+      .order('created_at', { ascending: false });
+      
+    if (error) {
+      console.error('Supabase fetchCustomerEnquiries error:', error);
+      throw new Error(`Unable to fetch customer enquiries from Supabase: ${error.message} (${error.code || 'RLS_ERROR'})`);
+    }
+    return (data || []) as CustomerEnquiry[];
   }
   return getLocal<CustomerEnquiry[]>('customer_enquiries', INITIAL_ENQUIRIES);
 }
 
 export async function updateEnquiryStatus(id: string, status: EnquiryStatus): Promise<void> {
   if (isSupabaseConfigured && supabase) {
-    try {
-      await supabase.from('customer_enquiries').update({ status }).eq('id', id);
-    } catch (e) {}
+    const { error } = await supabase.from('customer_enquiries').update({ status }).eq('id', id);
+    if (error) {
+      console.error('Supabase updateEnquiryStatus error:', error);
+      throw new Error(`Unable to update enquiry status: ${error.message}`);
+    }
   }
   const current = getLocal<CustomerEnquiry[]>('customer_enquiries', INITIAL_ENQUIRIES);
   const updated = current.map(e => e.id === id ? { ...e, status } : e);
@@ -517,7 +550,7 @@ export async function fetchGalleryImages(): Promise<GalleryImage[]> {
 export async function createGalleryImage(data: Omit<GalleryImage, 'id' | 'created_at'>): Promise<GalleryImage> {
   const newImage: GalleryImage = {
     ...data,
-    id: `g-${Date.now()}`,
+    id: crypto.randomUUID(),
     created_at: new Date().toISOString()
   };
 
