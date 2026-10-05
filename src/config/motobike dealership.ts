@@ -32,7 +32,7 @@ export const showroomConfig: ShowroomConfig = {
     category: "Motorcycle dealer in Coimbatore South, Tamil Nadu",
     tagline: "ALL TWO WHEELER SALES & SERVICE",
     phone: process.env.NEXT_PUBLIC_SHOWROOM_PHONE || "+91 98422 12345",
-    whatsapp: process.env.NEXT_PUBLIC_SHOWROOM_WHATSAPP || "+919842212345",
+    whatsapp: process.env.NEXT_PUBLIC_SHOWROOM_WHATSAPP || "+91 90000 00000",
     email: process.env.NEXT_PUBLIC_SHOWROOM_EMAIL || "contact@kovaimotobikes.com",
     address: "100/100, Podanur Main Rd",
     landmark: "opposite by Rasi Food",
