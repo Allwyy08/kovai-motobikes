@@ -1,0 +1,106 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --background: #ffffff;
+    --foreground: #111827;
+    --brand-red: #d32f2f;
+    --brand-red-hover: #b71c1c;
+    --card-bg: #ffffff;
+    --card-border: #e5e7eb;
+  }
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f3f4f6;
+}
+::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #d32f2f;
+}
+
+/* Light Theme Automotive Precision Cards & Panels */
+.kmb-card {
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.kmb-card:hover {
+  border-color: #d32f2f;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -5px rgba(211, 47, 47, 0.08);
+}
+
+.kmb-panel {
+  background-color: #f8f9fa;
+  border: 1px solid #e5e7eb;
+}
+
+/* Automotive Action Buttons */
+.kmb-btn-primary {
+  background-color: #d32f2f;
+  color: #ffffff;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+.kmb-btn-primary:hover {
+  background-color: #b71c1c;
+  box-shadow: 0 4px 15px rgba(211, 47, 47, 0.25);
+}
+
+.kmb-btn-secondary {
+  background-color: #ffffff;
+  color: #111827;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+.kmb-btn-secondary:hover {
+  background-color: #f9fafb;
+  border-color: #9ca3af;
+}
+
+/* Stagger Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-400 { animation-delay: 400ms; }
